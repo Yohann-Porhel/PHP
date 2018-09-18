@@ -1,0 +1,84 @@
+<?php
+/* ----------------------------------------------------------------- */
+/*                 Liste des rapports du client                      */
+/* ----------------------------------------------------------------- */
+
+/* Initialisation des noms de colonnes de la table */
+$columns[1] = 'Rapports disponibles';
+$columns[2] = 'Date d\'activation';
+//$columns[3] = 'Dernière actualisation';
+
+/* Création de l'entête de table */
+echo table_header($columns, "Liste de vos rapports disponibles");
+
+foreach ($rapports as $rapport) {
+
+    $line[1] = '<a href="' . base_url('pdfs/ca_par_annee20170123150958498.pdf') . '" data-toggle="modal" data-target="#myModal" target="blank"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>' . ' ' . $rapport->ra_libelle . '</a>';
+    $line[2] = $rapport->cc_date_activation;
+
+    echo table_line($line);
+}
+
+/* $line[1] = '<a href="' . base_url('pdfs/ca_par_annee20170123150958498.pdf') . '" target="blank"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Statistiques NOVA</a>';
+  $line[2] = '21-12-2016';
+  echo table_line($line); */
+
+/* Finalisation du tableau */
+echo table_footer();
+echo bouton_redirection_accueil();
+?>
+
+<script>
+
+
+</script>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                        data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Fermer</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Paramètres d'actualisation du rapport
+                </h4>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <form role="form">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Année de début</label>
+                        <input type="email" class="form-control"
+                               id="exampleInputEmail1" placeholder="AAAA"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Année de fin</label>
+                        <input type="password" class="form-control"
+                               id="exampleInputPassword1" placeholder="AAAA"/>
+                    </div>
+
+                </form>
+
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                    Annuler
+                </button>
+                <button type="button" class="btn btn-primary">
+                    Valider
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

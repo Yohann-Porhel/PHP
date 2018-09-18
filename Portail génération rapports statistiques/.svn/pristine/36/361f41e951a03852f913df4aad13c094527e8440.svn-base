@@ -1,0 +1,24 @@
+<h2>Accès API :</h2>
+
+<a href="<?php echo base_url('api/v1/database') ?>">API : liste des bases de données</a></p>
+<a href="<?php echo base_url('api/v1/database/5') ?>">API : par identifiant client</a></p>
+
+<h2>Administrateurs :</h2>
+
+<a href="<?php echo base_url('admin/utilisateurs') ?>">Liste des utilisateurs</a></p>
+<a href="<?php echo base_url('admin/utilisateur/gestion') ?>">Gestion d'un utilisateur</a></p> 
+<a href="<?php echo base_url('admin/clients') ?>">Liste des clients</a></p>
+
+<h4>Développement</h4>
+
+<script type="text/javascript">
+function executer() {
+    $.get("<?php echo base_url('rapport/genere_rapport') ?>");
+    return false;
+}
+</script>
+
+<a href="#" onclick="executer();">Lancer la génération du rapport (javascript)</a></p>
+<a href="<?php echo base_url('logs/infos') ?>">Logs d'information</a></p>
+<a href="<?php echo base_url('logs/erreurs') ?>">Logs d'erreur</a></p>
+<a href="<?php echo base_url('rapport/genere_rapport') ?>">Lancer la génération du rapport (normal)</a></p>

@@ -1,0 +1,98 @@
+<?php echo bouton_rapport_annuler(base_url('rapport')); ?>
+
+<div id="spinLoader"></div>
+
+<div id="texteAttente" class="form-group" text-center>
+    <div class="text-center">
+        <h2>Génération en cours :</h2>
+        <h1><i><?php echo $rapport->ra_libelle ?></i></h1>        
+    </div>
+</div>
+
+</div>
+
+<script>
+
+    var ajaxQuery;
+    /*
+     $(window).on('beforeunload', function () {
+     console.log("abort");
+     ajaxQuery.abort();
+     });
+     */
+
+    $.ajaxSetup({
+        beforeSend: function (xhr) {
+            $(window).bind('beforeunload', function () {
+                console.log("abort");
+                xhr.abort();
+            });
+        }
+    });
+
+    /* Lorsque la page est totalement chargée... */
+    $(document).ready(function () {
+
+        ouvrir_rapport_quand_disponible();
+
+    });
+
+
+
+    /* Fonction qui affiche la jauge de chargement */
+    function affiche_jauge_attente() {
+
+        $("#spinLoader").show();
+        $("#texteAttente").show();
+
+        //$("#popupWait").dialog({
+        //    width: 385,
+        //    hideCloseButton: true});
+
+        //$("#pleaseWaitDiv").dialog();
+        // Affiche une jauge dans une div
+        console.log("On affiche la jauge");
+    }
+
+    /* Fonction qui masque la jauge de chargement */
+    function masque_jauge_attente() {
+
+
+        //$("#popupWait").dialog("close");
+        // Affiche une jauge dans une div
+        $("#spinLoader").hide();
+        $("#texteAttente").hide();
+        console.log("On masque la jauge");
+
+    }
+
+    /* Fonction permettant d'ouvrir automatiquement le rapport lorsqu'il est prêt */
+    function ouvrir_rapport_quand_disponible() {
+        console.log("dans ouvrir_rapport");
+        affiche_jauge_attente();
+        // On prépare l'URL à interroger
+        var url = "<?php echo base_url('Web_Commande_Controller/get_url_rapport_genere/' . $cmd_guid); ?>";
+        // On interroge l'URL en AJAX
+        ajaxQuery = $.ajax({
+            type: "POST",
+            url: url
+        }).done(function (url_du_rapport_genere) {
+
+            // Code qui est déclenché quand l'url du rapport est renvoyée par code igniter
+            //alert("Afficher rapport généré : " + url_du_rapport_genere);
+            // On masque la jauge
+            masque_jauge_attente();
+            //alert(url_du_rapport_genere);
+            document.location.href = "<?php echo base_url('rapports') ?>";
+            // On ouvre dans une nouvelle fenêtre
+            window.open(url_du_rapport_genere, '_blank');
+
+        });
+
+    }
+
+</script>
+
+
+
+

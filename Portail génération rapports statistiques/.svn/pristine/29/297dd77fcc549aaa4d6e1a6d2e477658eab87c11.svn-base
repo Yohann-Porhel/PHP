@@ -1,0 +1,1 @@
+<?php exec($apobie_exe . ' ' . $command_guid) ?>

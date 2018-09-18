@@ -1,0 +1,61 @@
+<h1>Test attente fin traitement jQuery</h1>
+
+<div id="jauge"></div>
+
+<script>
+
+    /* Lorsque la page est totalement chargée... */
+    $(document).ready(function () {
+
+        ouvre_rapport_quand_disponible('2ED72B95-42D5-CA2E-007B-6B21F91E9752');
+
+    });
+    
+    /* Fonction qui affiche la jauge de chargement */
+    function affiche_jauge_attente() {
+        
+        // Affiche une jauge dans une div
+        console.log("On affiche la jauge");   
+        
+    }
+
+    /* Fonction qui masque la jauge de chargement */
+    function masque_jauge_attente() {
+        
+        // Affiche une jauge dans une div
+        console.log("On masque la jauge");
+    }
+
+    /* Fonction permettant d'ouvrir automatiquement le rapport lorrsqu'il est prêt */
+    function ouvre_rapport_quand_disponible(guid) {
+
+        affiche_jauge_attente();
+
+        // On prépare l'URL à interroger
+        var url = "<?php echo base_url('Web_Commande_Controller/get_url_rapport_genere/'); ?>" + guid;
+
+        // On intérroge l'URL en AJAX
+        $.when($.ajax({
+            type: "POST",
+            url: url
+        })).then(function (url_du_rapport_genere) {
+            
+            // Code qui est déclenché quand l'url du rapport est renvoyée par code igniter
+            
+            // On masque la jauge
+            masque_jauge_attente();
+                        
+            alert(url_du_rapport_genere);
+            
+            // On ouvre dans une nouvelle fenêtre
+            window.open(url_du_rapport_genere, '_blank');            
+            
+        });
+
+    }
+
+</script>
+
+
+
+

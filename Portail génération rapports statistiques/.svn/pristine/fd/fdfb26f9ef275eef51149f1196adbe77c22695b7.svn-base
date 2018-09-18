@@ -1,0 +1,110 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+/*
+| -------------------------------------------------------------------------
+| URI ROUTING
+| -------------------------------------------------------------------------
+| This file lets you re-map URI requests to specific controller functions.
+|
+| Typically there is a one-to-one relationship between a URL string
+| and its corresponding controller class/method. The segments in a
+| URL normally follow this pattern:
+|
+|	example.com/class/method/id/
+|
+| In some instances, however, you may want to remap this relationship
+| so that a different class/function is called than the one
+| corresponding to the URL.
+|
+| Please see the user guide for complete details:
+|
+|	https://codeigniter.com/user_guide/general/routing.html
+|
+| -------------------------------------------------------------------------
+| RESERVED ROUTES
+| -------------------------------------------------------------------------
+|
+| There are three reserved routes:
+|
+|	$route['default_controller'] = 'welcome';
+|
+| This route indicates which controller class should be loaded if the
+| URI contains no data. In the above example, the "welcome" class
+| would be loaded.
+|
+|	$route['404_override'] = 'errors/page_missing';
+|
+| This route will tell the Router which controller/method to use if those
+| provided in the URL cannot be matched to a valid route.
+|
+|	$route['translate_uri_dashes'] = FALSE;
+|
+| This is not exactly a route, but allows you to automatically route
+| controller and method names that contain dashes. '-' isn't a valid
+| class or method name character, so it requires translation.
+| When you set this option to TRUE, it will replace ALL dashes in the
+| controller and method URI segments.
+|
+| Examples:	my-controller/index	-> my_controller/index
+|		my-controller/my-method	-> my_controller/my_method
+*/
+$route['developpement'] = 'developpement_controller';
+$route['logs'] = 'log_controller';
+$route['logs/(:any)'] = 'log_controller/$1';
+$route['log'] = 'log_controller';
+$route['log/(:any)'] = 'log_controller/$1';
+
+$route['apobie'] = 'apobie_controller';
+$route['apobie/(:any)'] = 'apobie_controller/$1';
+
+$route['widgets'] = 'widget_controller';
+$route['widget'] = 'widget_controller';
+
+$route['catalogue'] = 'catalogue_controller';
+$route['rapport'] = 'rapport_controller';
+$route['rapport/(:any)'] = 'rapport_controller/obtenir_invite_par_rapport/$1';
+$route['rapports'] = 'rapport_controller';
+$route['rapports/(:any)'] = 'rapport_controller/$1';
+
+$route['test'] = 'test_controller';
+$route['test/(:any)'] = 'test_controller/$1';
+
+$route['connexion'] = 'utilisateur_connexion_controller/connexion';
+$route['connexion/(:any)'] = 'utilisateur_connexion_controller/connexion/$1';
+
+$route['deconnexion'] = 'utilisateur_connexion_controller/deconnexion';
+$route['deconnexion/(:any)'] = 'utilisateur_connexion_controller/deconnexion/$1';
+
+$route['accueil'] = 'accueil_controller';
+$route['accueil/(:any)'] = 'accueil_controller/$1';
+
+$route['default_controller'] = 'utilisateur_connexion_controller/connexion';
+$route['404_override'] = '';
+$route['translate_uri_dashes'] = FALSE;
+
+/* ----------------------------------------------------------------- */
+/*                 Routes réservées aux administrateurs              */
+/* ----------------------------------------------------------------- */
+$route['admin'] = 'admin_controller';
+
+$route['admin/utilisateurs'] = 'admin_utilisateur_controller';
+$route['admin/utilisateurs/(:num)'] = 'admin_utilisateur_controller/ficheUtilisateur/$1';
+$route['admin/utilisateur'] = 'admin_utilisateur_controller';
+$route['admin/utilisateur/(:num)'] = 'admin_utilisateur_controller/ficheUtilisateur/$1';
+$route['admin/utilisateur/gestion'] = 'admin_utilisateur_controller/afficheCommitView';
+$route['admin/utilisateur/gestion/(:num)'] = 'admin_utilisateur_controller/afficheCommitView/$1';
+
+$route['admin/clients'] = 'admin_client_controller';
+$route['admin/client/(:num)'] = 'admin_client_controller/afficherInformationsDossierClient/$1';
+
+$route['admin/commande'] = 'admin_client_controller/afficheCommandeJetonsView';
+
+/* ----------------------------------------------------------------- */
+/*                          Routes pour les API                      */
+/* ----------------------------------------------------------------- */
+$route['api'] = 'web_api_controller_v1/afficheApiView';
+$route['api/v1/database']['get'] = 'web_api_controller_v1/index';
+$route['api/v1/database/(:any)']['get'] = 'web_api_controller_v1/indexParId/$1';
+//$route['admin/api']['put'] = 'web_api_controller_v1/index_put';

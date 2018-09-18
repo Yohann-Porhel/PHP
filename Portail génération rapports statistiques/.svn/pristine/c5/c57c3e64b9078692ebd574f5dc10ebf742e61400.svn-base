@@ -1,0 +1,116 @@
+function js_dialogue_supprimer(libelleDialogue, urlActionSiOui = '#') {
+
+    $("#popupconfirmation").text(libelleDialogue);
+
+    // cette ligne est très importante pour empêcher les liens ou les boutons de rediriger
+    // vers une autre page avant que l'usager ait cliqué dans le popup
+    event.preventDefault();
+    // retrouve l'attribut href du lien sur lequel on a cliqué    
+    // on définit les boutons ici plutôt que plus haut puisqu'on a besoin de connaître l'URL de la page, qui n'était pas encore disponible sur le document.ready.
+    $("#popupconfirmation").dialog({
+        buttons: [
+            {
+                text: "Oui",
+                click: function () {
+                    window.location.href = urlActionSiOui;
+                }
+            },
+            {
+                text: "Non",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
+        ]
+    });
+}
+
+/* Affiche une boite de dialogue de confirmation */
+function js_dialogue_confirmer(libelleDialogue, id, value) {
+
+    $("#popupconfirmation").text(libelleDialogue);
+    event.preventDefault();
+
+    $("#popupconfirmation").dialog({
+        width: 385,
+        buttons: [
+            {
+                text: "Annuler",
+                click: function () {
+                    mettreToggleSurOff($("#" + id).bootstrapToggle('off'));
+                    $(this).dialog("close");
+                }
+            },
+            {
+                text: "Confirmer l'abonnement au rapport",
+                click: function () {
+
+                    var donnees = 'id_apobi_rapport=' + id + '&ra_tarif=' + value;
+
+                    $.post({
+                        url: "abonnement_controller/insererAbonnementRapport",
+                        data: donnees,
+                        cache: false,
+                        success: function (html) {
+                            $('#msg').html(html)
+                        }
+                    });
+
+
+                    $(this).dialog("close");
+
+                }
+            }
+        ]
+    });
+}
+
+/* Permet de mettre le Toggle sur OFF */
+function mettreToggleSurOff() {
+    $('#id').bootstrapToggle('off')
+}
+
+/* Affiche une boite de dialogue avec un bouton OK */
+function js_dialogue_OK(libelleDialogue) {
+
+    $("#popupOK").text(libelleDialogue);
+    event.preventDefault();
+
+    $("#popupOK").dialog({
+        buttons: [
+            {
+                text: "OK",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
+        ]
+    });
+    $("#boutonOK").click(function (event) {
+        event.preventDefault();
+        $("#popupOK").dialog("open");
+    })
+
+}
+
+function js_rechercher(value) {
+
+    $(document).ready(function () {
+
+        $("#rechercher").click(function () {
+
+            var donnees = 'fk_client=' + value;
+            $.post({
+                url: "apobi_client_controller/rechercherClientParNom",
+                data: donnees,
+                cache: false,
+                success: function (html) {
+                    $('#msg').html(html)
+                }
+            }
+            );
+        });
+    }
+    );
+}
+

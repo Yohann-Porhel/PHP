@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Description of MY_Controller_Client
+ *
+ * @author Sébastien Deschamps
+ */
+class MY_Controller extends CI_Controller {
+    
+    public function __construct() {
+        parent::__construct();      
+    }
+        
+}
+
+?>

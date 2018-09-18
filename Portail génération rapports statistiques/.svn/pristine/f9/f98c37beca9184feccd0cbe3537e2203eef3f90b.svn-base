@@ -1,0 +1,5 @@
+<?php 
+echo 'vue test 2';
+// exec('C:/MESPRO~1/ABIE/Exe/ABIE.exe') 
+
+?>

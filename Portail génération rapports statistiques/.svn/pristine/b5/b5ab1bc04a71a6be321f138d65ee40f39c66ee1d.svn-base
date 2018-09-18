@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * Description of apobi_database_model
+ *
+ * @author yohann.porhel
+ */
+class apobi_database_model extends MY_Model {
+
+    protected $id = 'id_apobi_client_databases';
+    protected $table = 'apobi_client_databases';
+
+    public function afficheResultat($table) {
+        
+        $sql = 'SELECT * FROM ' . $table;
+        $p[0] = $table;
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            return false;
+        }
+        foreach ($query->result() as $row) {
+            return $row;
+        }
+    }
+
+}

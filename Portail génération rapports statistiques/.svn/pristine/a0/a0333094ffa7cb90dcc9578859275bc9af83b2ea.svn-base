@@ -1,0 +1,73 @@
+<?php
+/* ----------------------------------------------------------------- */
+/*                 Liste des rapports du catalogue                   */
+/* ----------------------------------------------------------------- */
+
+/* Initialisation des noms de colonnes de la table */
+$columns[1] = 'Souscrire';
+$columns[2] = 'Rapport';
+$columns[3] = '<div align="center">Coût mensuel</div>';
+
+/* Création de l'entête de table */
+echo table_header($columns, "Catalogue des rapports disponibles");
+
+/* Ajout des lignes de données dans la table */
+if (isset($rapports)) {
+
+    foreach ($rapports as $rapport) {
+
+        $line[1] = '<input type="checkbox" id="' . $rapport->id_apobi_rapport . '" name="' . $rapport->ra_libelle . '" value="' . $rapport->ra_tarif . '" data-toggle="toggle" data-on="Oui" data-off="Non" data-onstyle="success" data-offstyle="danger">';
+        $line[2] = $rapport->ra_libelle;
+        $line[3] = '<b><div align="center">' . $rapport->ra_tarif . (($rapport->ra_tarif > 1) ? ' jetons' : ' jeton') . "</div></b>";
+
+        /* Ajout de la ligne dans le tableau */
+        echo table_line($line);
+    }
+}
+/* Fin de la table */
+echo table_footer();
+echo bouton_redirection_accueil();
+?>
+<div id="msg"></div>
+
+<div id="popupconfirmation" title="Confirmation d'abonnement"></div>
+<script>
+
+    $(function () {
+
+        $('#1').change(function () {
+            afficheMessageConfirmation($(this).prop('id'), $(this).prop('name'), $(this).prop('value'));
+        });
+        $('#2').change(function () {
+            afficheMessageConfirmation($(this).prop('id'), $(this).prop('name'), $(this).prop('value'));
+        });
+        $('#3').change(function () {
+            afficheMessageConfirmation($(this).prop('id'), $(this).prop('name'), $(this).prop('value'));
+        });
+        $('#4').change(function () {
+            afficheMessageConfirmation($(this).prop('id'), $(this).prop('name'), $(this).prop('value'));
+        });
+        $('#5').change(function () {
+            afficheMessageConfirmation($(this).prop('id'), $(this).prop('name'), $(this).prop('value'));
+        });
+        function afficheMessageConfirmation(id_apobi_rapport, ra_libelle, ra_tarif) {
+
+            js_dialogue_confirmer("Vous avez demandé l\'abonnement au rapport : " + ra_libelle + ", pour un cout de " + ra_tarif + ((ra_tarif > 1) ? ' jetons' : ' jeton') + ", confirmez-vous ceci ?", id_apobi_rapport, ra_tarif);
+        }
+        ;
+    });</script>
+
+
+<div id="popupOK" title ="Abonnement réalisé"></div>
+<script>
+
+    $(document).ready(function () {
+        if (id_apobi_rapport !== 0) {
+            $('#' + id_apobi_rapport).bootstrapToggle('on');
+        }
+    }
+
+    });
+    //  function js_dialogue_OK("Votre abonnement est actif");
+
+</script>

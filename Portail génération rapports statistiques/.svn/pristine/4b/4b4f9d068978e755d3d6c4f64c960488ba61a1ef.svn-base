@@ -1,0 +1,154 @@
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Layout {
+
+    private $CI;
+    private $var = array();
+
+    public function __construct() {
+        $this->CI = get_instance();
+        $this->var['content'] = '';         
+    }
+
+    public function get_flashmessage_dialog() {
+       // $error = $this->CI->session->flashdata('error');
+        if (isset($error) && $error != '') {
+            return $this->get_message_box('Message d\'information',$error);
+        }
+    }
+
+    public function get_message_box($title, $message) {
+
+        $script = '';
+        $script .= '<script>' . "\n";
+        $script .= '$(function () {' . "\n";
+        $script .= '$("#dialog-message").dialog({' . "\n";
+        $script .= 'modal: true,' . "\n";
+        $script .= 'buttons: {' . "\n";
+        $script .= 'Ok: function () {' . "\n";
+        $script .= '$(this).dialog("close");' . "\n";
+        $script .= '}' . "\n";
+        $script .= '}' . "\n";
+        $script .= '});' . "\n";
+        $script .= '});' . "\n";
+        $script .= '</script>' . "\n";
+
+        $dialog = '';
+        $dialog .= '<div id="dialog-message" title="' . $title . '">' . "\n";
+        $dialog .= $message . "\n";
+        $dialog .= '</div>' . "\n";
+        
+        return $script . "\n" . $dialog;
+        
+    }
+
+    // Lance le rendu de toutes les vues ajoutées
+    public function view($name, $data = array(), $tovar = false) {
+
+        // Affichage du profiler
+        $this->CI->output->enable_profiler(false);
+        // Ajout de la div section
+        //   $this->var['content'] = '<section id="main_content"><!-- main section --> ' . "\n" . $this->var['content'];
+        // Affichage d'éventuelles erreurs
+        if (!empty($var['error'])) {
+            echo '<div class="alert alert-error">' . $var['error'] . '</div>' . "\n";
+        }
+
+        /* if (isset($this->var['title'])) {
+          $data['title'] = $this->var['title'];
+          }
+         * 
+         */
+        // Affectation du titre de la page
+
+        // Scripts compl&mentaires
+        $scripts = $this->get_flashmessage_dialog();
+        $this->var['scripts'] = $scripts;
+        
+        if (empty($this->var['title'])) {
+            $this->var['title'] = $this->CI->config->item('site_name');
+        } else {
+            $this->var['title'] = $this->var['title'] . ' - ' . $this->CI->config->item('site_name');
+        }
+
+        // Ajout du contenu principal
+        // $this->var['content'] .= '<div class="layout_bloc">' . $this->CI->load->view($name, $data, true) . '</div>' . "\n";
+        $this->var['content'] .= $this->CI->load->view($name, $data, true) . "\n";
+
+        // Gestion de la pagination
+        if (isset($data['pagination']) && $data['pagination'] == true) {
+
+
+
+            $this->var['content'] .= $this->CI->pagination->create_links();
+        }
+
+        // Fermeture de la div section
+        //  $this->var['content'] .= '</section>';
+        // $this->var['content'] .= '<!-- main section end -->' . "\n";
+        //  Nous initialisons la variable $charset avec la même valeur que
+        //  la clé de configuration initialisée dans le fichier config.php
+        $this->var['charset'] = $this->CI->config->item('charset');
+                
+        // On charge toutes les vues dans le template
+        // $this->CI->load->view('../templates/' . $this->var['template'] . '/template', $this->var);
+        return $this->CI->load->view('../templates/' . $this->CI->config->item('template') . '/template', $this->var, $tovar);
+
+        
+    }
+
+    // Permet d'ajouter une vue à la liste de vues à rendre
+    public function views($name, $data = array()) {
+        // $this->var['content'] .= '<div class="layout_bloc">' . $this->CI->load->view($name, $data, true) . '</div>';
+        $this->var['content'] .= $this->CI->load->view($name, $data, true);
+        $this->var['content'] .= "\n";
+        return $this;
+    }
+
+    public function set_title($_title) {
+        if (is_string($_title) AND ! empty($_title)) {
+            $this->var['title'] = $_title;
+            return true;
+        }
+        return false;
+    }
+
+    public function set_description($_description) {
+        if (is_string($_description) AND ! empty($_description)) {
+            $this->var['description'] = $_description;
+            return true;
+        }
+        return false;
+    }
+
+    public function set_keywords($_keywords) {
+        if (is_string($_keywords) AND ! empty($_keywords)) {
+            $this->var['keywords'] = $_keywords;
+            return true;
+        }
+        return false;
+    }
+
+    public function load_jquery($_load) {
+        $this->var['load_jquery'] = $_load;
+    }
+
+    public function set_charset($charset) {
+        if (is_string($charset) AND ! empty($charset)) {
+            $this->var['charset'] = $charset;
+            return true;
+        }
+        return false;
+    }
+
+    public function set_template($template) {
+        if (is_string($template) AND ! empty($template)) {
+            $this->var['template'] = $template;
+            return true;
+        }
+        return false;
+    }
+
+}

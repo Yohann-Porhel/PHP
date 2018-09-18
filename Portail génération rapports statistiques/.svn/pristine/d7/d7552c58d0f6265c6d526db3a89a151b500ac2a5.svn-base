@@ -1,0 +1,114 @@
+
+<?php
+
+function table_header($columns, $tableLabel = '') {
+    $ret = '';
+    // $ret .= '<div class="table-responsive">' . "\n";
+    // $ret .= '<div class="panel panel-primary">' . "\n";
+    $ret .= '<div class="panel panel-default">' . "\n";
+    if (isset($tableLabel) && $tableLabel != '') {
+         $ret .= '<div class="panel-heading">' . $tableLabel . '</div>' . "\n";
+        //$ret .= '<h3 class="panel-title">' . $tableLabel . '</h3>' . "\n";
+        
+    }
+    $ret .= '<div class="panel-body">' . "\n";
+    $ret .= '<table class="table table-hover">' . "\n";
+    $ret .= '<thead>' . "\n";
+    $ret .= '<tr>' . "\n";
+    foreach ($columns as $column) {
+        $ret .= '<th>' . $column . '</th>' . "\n";
+    }
+    //}
+    return $ret;
+}
+
+function table_line($values) {
+    $ret = '';
+    $ret .= '</tr>' . "\n";
+    $ret .= '</thead>' . "\n";
+    $ret .= '<tbody>' . "\n";
+    $ret .= '<tr>' . "\n";
+    $ret .= '<tr>' . "\n";
+    foreach ($values as $value) {
+        $ret .= '<td>' . "\n";
+        $ret .= $value . "\n";
+        $ret .= '</td>' . "\n";
+    }
+    $ret .= '</tr>' . "\n";
+    return $ret;
+}
+
+function table_footer() {
+    $ret = '';
+    $ret .= '</tr>' . "\n";
+    $ret .= '</tbody>' . "\n";
+    $ret .= '</table>' . "\n";
+   $ret .= '</div>' . "\n";
+    $ret .= '</div>' . "\n";
+    return $ret;
+}
+
+function myform_header($label, $action = '', $panelParams = null) {
+    $ret = '';
+    $class = 'panel panel-primary';
+    $params = '';
+    if (isset($panelParams) && !empty($panelParams)) {
+        foreach ($panelParams as $param => $value) {
+            if ($param == 'class') {
+                $class .= ' ' . $value;
+            } else {
+                $params .= $param . '="' . $value . '" ';
+            }
+        }
+    }
+
+    $ret .= '<div class="' . $class . '" ' . $params . '>' . "\n";
+    $ret .= '<div class="panel-heading">' . $label . '</div>' . "\n";
+    $ret .= '<div id="formulaire">' . "\n";
+    $url = '';
+    if (isset($action) && $action != '') {
+        $url = base_url($action);
+    }
+    $ret .= '<form style="margin-right:10px" class="form-horizontal" action="' . $url . '" method="post" accept-charset="utf-8" enctype="multipart/form-data">' . "\n";
+    return $ret;
+}
+
+function myform_footer($btnLabel = 'Valider') {
+    $ret = '';
+
+    /* Ajout du bouton */
+    $ret .= '<div class="form-group">' . "\n";
+    $ret .= '<div class="col-xs-offset-2 col-xs-10">' . "\n";
+    $ret .= '<button type = "submit" class = "btn btn-primary">' . $btnLabel . '</button>' . "\n";
+    $ret .= '</div>';
+    $ret .= '</div>';
+
+    /* Fermeture des divs du formulaire */
+    $ret .= '</div>' . "\n";
+    $ret .= '</div>' . "\n";
+
+    return $ret;
+}
+
+function myform_input($name, $value, $label, $type = 'text', $txtDefaut = '') {
+
+    $ret = '';
+    $ret .= '<!-- ' . $label . ' -->' . "\n";
+    $ret .= '<div class="form-group">' . "\n";
+    $ret .= '<label for="' . $name . '" class="control-label col-xs-2">' . $label . '</label>' . "\n";
+    $ret .= '<div class="col-xs-10">' . "\n";
+    $ret .= '<input type="' . $type . '" name="' . $name . '" class="form-control" id="' . $name . '" value="' . $value . '" placeholder="' . $txtDefaut . '">' . "\n";
+    $ret .= form_error($name);
+    $ret .= '</div>' . "\n";
+    $ret .= '</div>' . "\n";
+    $ret .= "\n";
+
+    return $ret;
+}
+
+function myform_hidden($name, $value) {
+    $ret = '';
+    $ret .= '<input type="hidden" name="' . $name . '" value="' . $value . '" />' . "\n";
+    return $ret;
+}
+?>

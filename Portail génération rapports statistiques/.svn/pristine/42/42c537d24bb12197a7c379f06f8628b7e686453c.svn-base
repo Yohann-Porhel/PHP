@@ -1,0 +1,36 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Test_controller
+ *
+ * @author sebastien.deschamps
+ */
+class test_controller extends MY_Controller {
+    
+    public function index() {
+        echo "index test";
+        // $this->load->model('rapport_model');
+         // echo(print_r($this->rapport_model->getAllRapports()));
+    }
+    
+    public function test() {
+        $this->layout->view('test/test_view');
+    }
+    
+    public function yohann() {
+      //  $content[0] = $this->layout->views('test/test_yohann');
+       // $content[1] = $this->layout->views('test/test_view');
+        
+        $temp = 'toto';
+        
+        $this->layout->view('test/test_yohann');
+        
+    }
+    
+}

@@ -1,0 +1,112 @@
+<h1>Test attente fin traitement jQuery</h1>
+
+<div id="ajax_datas"></div>
+
+<script>
+
+    var resultat_ajax = "";
+
+    /* Lorsque la page est totalement chargée... */
+    $(document).ready(function () {
+        console.log("Document ready !");
+
+        /* On appel une méthode JS qui permet récupérer l'état d'une web_commande */
+        // for (var i = 0; i < 60; i++) {
+        test_etat_rapport('2ED72B95-42D5-CA2E-007B-6B21F91E9752', "<?php echo base_url('rapport/afficher/2ED72B95-42D5-CA2E-007B-6B21F91E9752'); ?>");
+
+        //}
+
+        //console.log(resultat_ajax);
+        //sleep(1000);
+        //break;
+
+        // } while (resultat_ajax !== "TERMINE");
+
+        // console.log("Résultat final " + resultat_ajax);
+
+        // sleep(2000);
+        /*
+         var url = "";
+         
+         for (var i = 0; i < 3; i++) {
+         ajax(url).then(function (result) {
+         console.log('Résultat Ajax promise : ' + result);
+         
+         $(window).data("ajax_result", result);
+         // resultat = result; 
+         
+         }).catch(function () {
+         // An error occurred
+         });
+         
+         sleep(1000);
+         }
+         
+         sleep(5000);
+         console.log("Résultat final : " + $(window).data('ajax_result'));
+         */
+    });
+
+    /* Fonction permettant de retourner l'état d'une web_commande */
+    function test_etat_rapport(guid, url_destination) {
+
+        // On attend toujours 1 seconde
+        sleep(10000);
+
+        // On prépare l'URL à interroger
+        var url = "<?php echo base_url('Web_Commande_Controller/afficher_etat_commande/'); ?>" + guid;
+
+        // On intérroge l'URL en AJAX
+        var requeteAJAX = $.ajax({
+            type: "POST",
+            url: url
+        });
+
+        // On récupère le contenu de la page chargée par la requête AJAX
+        requeteAJAX.done(function (data) {
+            resultat_ajax = data;
+            console.log("data=" + data);
+            if (data.indexOf("TERMINE") != -1) {
+                window.location.replace(url_destination);
+            }
+
+        });
+
+    }
+
+
+    /* ---------------------------------------------------------------------
+     *                      Fonction ajax avec 'promise'     
+     --------------------------------------------------------------------- */
+    function ajax(url) {
+        return new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                resolve(this.responseText);
+            };
+            xhr.onerror = reject;
+            xhr.open('GET', url);
+            xhr.send();
+        });
+    }
+
+
+    /* ---------------------------------------------------------------------
+     * Fonction permettant d'attendre un certain temps (en millisecondes)     
+     --------------------------------------------------------------------- */
+    function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) {
+                break;
+            }
+        }
+    }
+
+
+
+</script>
+
+
+
+

@@ -1,0 +1,21 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of apobi_utilisateur_model
+ *
+ * @author sebastien.deschamps
+ */
+class apobi_utilisateur_model extends MY_Model {
+
+    protected $id = 'id_apobi_utilisateur';
+    protected $table = 'apobi_utilisateur';
+
+    
+    
+}

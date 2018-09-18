@@ -1,0 +1,114 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+class utilisateur_connexion_controller extends MY_Controller {
+    /* public function connexion_old() {
+
+      $login_saisi = $this->input->post('sa_ut_email', 'sa_ut_password');
+
+      if (!isset($login_saisi) || $login_saisi == null) {
+
+      $data['flash'] = $this->session->flashdata();
+
+
+      $this->layout->view('utilisateurs/utilisateur_connexion_view', $data);
+      } else {
+
+      $data['title'] = 'Connexion au portail Apologic BI';
+
+      $this->load->library('form_validation');
+      $this->form_validation->set_rules('sa_ut_email', 'Email', 'required');
+      $this->form_validation->set_rules('sa_ut_password', 'Mot de passe', 'required');
+
+      $email = $this->input->post('sa_ut_email');
+      $password = $this->input->post('sa_ut_password');
+
+      if ($this->form_validation->run()) {
+
+      $this->load->model('apobi_utilisateur_model');
+      if ($this->apobi_utilisateur_model->getByEmailAndPassword($email, $password)) {
+      $session_data = array(
+      'email' => $email
+      );
+      $this->session->set_userdata($session_data);
+      redirect('accueil');
+      }
+      } else {
+      $data['saisie_utilisateur']['email'] = $email;
+      $this->session->set_flashdata('msg', 'Erreur d\'authentification - Veuillez rééssayer');
+      //$this->layout->view('utilisateurs/utilisateur_connexion_view', $data);
+      redirect('connexion');
+      }
+      }
+      } */
+
+    //fonction testant la validité des données saisies par l'utilisateur
+    private function testValiditeLoginEtMotDePasseSaisis() {
+
+        $nomChampSaisieEmail = 'sa_ut_email';
+
+        $ut_email_saisi = $this->input->post($nomChampSaisieEmail);
+        $ut_mot_de_passe_saisi = $this->input->post('sa_ut_password');       
+
+        memoriseSaisieUtilisateur($nomChampSaisieEmail, $ut_email_saisi);
+
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('sa_ut_email', 'Email', 'trim|required|valid_email');
+        $this->form_validation->set_rules('sa_ut_password', 'Mot de passe', 'trim|required');
+
+        /* Premier test de validation du formulaire */
+        if (!$this->form_validation->run()) {
+            myform_set_flashdata_warning('Erreur de validation');
+            return false;
+        }
+
+        /* Test de l'existence de l'utilisateur avec le mot de passe */
+        $this->load->model('apobi_utilisateur_model');
+        if (!$this->apobi_utilisateur_model->getByEmailAndPassword($ut_email_saisi, $ut_mot_de_passe_saisi)) {
+            myform_set_flashdata_warning('Identifiant ou mot de passe invalide');
+            return false;
+        }
+
+        /* Mémorisation en session des infos de l'utilisateur connecté */
+        $session_data = array(
+            'email' => $ut_email_saisi
+        );
+        $this->session->set_userdata($session_data);
+
+        return true;
+    }
+
+    //fonction permettant la connexion d'un utilisateur
+    public function connexion() {
+
+        $login_saisi = $this->input->post('sa_ut_email');
+
+        if (!isset($login_saisi) || $login_saisi == null) {
+
+            /* Si premier affichage de la fenêtre de connexion */
+            $this->layout->view('utilisateurs/utilisateur_connexion_view');
+        } else {
+
+            /* Si validation de la fenêtre de login avec des informations saisies */
+            if ($this->testValiditeLoginEtMotDePasseSaisis()) {
+
+                redirect('accueil');
+            } else {
+
+                redirect('connexion');
+            }
+        }
+    }
+
+    //fonction permettant la déconnexion d'un utilisateur
+    public function deconnexion() {
+        $this->session->sess_destroy();
+        redirect(base_url() . 'connexion');
+    }
+
+}

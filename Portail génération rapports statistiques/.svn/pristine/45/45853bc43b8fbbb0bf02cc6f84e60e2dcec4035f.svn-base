@@ -1,0 +1,13 @@
+<?php
+
+echo myform_header('Portail Apologic BI | Envoi des identifiants utilisateur', base_url('admin_utilisateur_controller/envoiEmailChangementMotDePasse'));
+echo text('Le mot de passe de l\'utilisateur '.$this->session->ut_email.' a changé :');
+echo label('E-Mail',(!empty($this->session->ut_email)) ? $this->session->ut_email : NULL);
+echo label('Mot de passe',(!empty($this->session->ut_password_en_clair)) ? $this->session->ut_password_en_clair : NULL);
+echo checkbox_label('Copie mail à l\'utilisateur', TRUE);
+
+echo myform_input_invisible('ut_email',(!empty($this->session->ut_email) ? $this->session->ut_email : NULL));
+echo myform_input_invisible('ut_password',(!empty($this->session->ut_password_en_clair) ? $this->session->ut_password_en_clair : NULL));
+echo myform_footer('Envoyer e-mail');
+
+?>

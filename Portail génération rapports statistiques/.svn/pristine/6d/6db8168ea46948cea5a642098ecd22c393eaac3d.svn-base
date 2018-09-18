@@ -1,0 +1,34 @@
+<?php
+
+class Apobi_Databases_Controller extends MY_Controller {
+
+    public function index() {
+
+        $this->load->model('apobi_database_model');
+        $var['bases'] = $this->apobi_database_model->getAll();
+        $this->layout->view('test/test_view', $var);
+    }
+
+    /* Permet de charger la configuration d'une BDD en fonction de son nom */
+
+    public function chargerConfigurationBaseDeDonnees($database_nom) {
+
+        $CI = &get_instance();
+        $this->db = $CI->load->database($database_nom, TRUE);
+    }
+
+    /* Permet l'affichage du contenu d'une table d'une autre BDD -A SUPPRIMER- */
+
+    public function afficheContenuTable() {
+
+        $database_nom = $this->input->post('database_nom');
+        $this->chargerConfigurationBaseDeDonnees($database_nom);
+
+        $table = ($database_nom . '_apo1');
+
+        $this->load->model('apobi_database_model');
+        $var['resultats'] = $this->apobi_database_model->afficheResultat($table);
+        $this->layout->view('test/test_yohann', $var);
+    }
+
+}

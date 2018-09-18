@@ -1,0 +1,48 @@
+<?php
+/* ----------------------------------------------------------------- */
+/*                 Liste des rapports du client                      */
+/* ----------------------------------------------------------------- */
+
+/* Initialisation des noms de colonnes de la table */
+$columns[1] = 'Nom du rapport';
+$columns[2] = 'Date d\'activation';
+$columns[3] = 'Lancer';
+//$columns[3] = 'Dernière actualisation';
+
+/* Création de l'entête de table */
+echo table_header($columns, "Liste de vos rapports disponibles");
+
+foreach ($rapports as $rapport) {
+
+    $line[1] = $rapport->ra_libelle;
+    $line[2] = date("d-m-Y", strtotime($rapport->cc_date_activation));
+    $line[3] = '<a onclick="ajaxLoadPopup(' . $rapport->id_apobi_rapport . ')" data-toggle="modal" data-target="#myModal" alt="Lancer" title="Générer le rapport" class="btn btn-info"><span class="glyphicon glyphicon-play"></span></a>';
+
+    echo table_line($line);
+}
+
+/* $line[1] = '<a href="' . base_url('pdfs/ca_par_annee20170123150958498.pdf') . '" target="blank"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Statistiques NOVA</a>';
+  $line[2] = '21-12-2016';
+  echo table_line($line); */
+
+/* Finalisation du tableau */
+echo table_footer();
+echo bouton_redirection_accueil();
+?>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="Saisissez votre plage de données" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="contenu_popup">
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function ajaxLoadPopup(idRapport) {
+        console.log('Chargement Ajax de : <?php echo base_url("rapport/"); ?>' + idRapport);
+        $("#contenu_popup").load('<?php echo base_url("rapport/"); ?>' + idRapport);
+    }
+
+</script>

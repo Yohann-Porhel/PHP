@@ -1,0 +1,212 @@
+
+<?php
+
+function table_header($columns, $tableLabel = '') {
+    $ret = '';
+    // $ret .= '<div class="table-responsive">' . "\n";
+    // $ret .= '<div class="panel panel-primary">' . "\n";
+    $ret .= '<div class="panel panel-default">' . "\n";
+    if (isset($tableLabel) && $tableLabel != '') {
+        $ret .= '<div class="panel-heading">' . $tableLabel . '</div>' . "\n";
+        //$ret .= '<h3 class="panel-title">' . $tableLabel . '</h3>' . "\n";
+    }
+    $ret .= '<div class="panel-body">' . "\n";
+    $ret .= '<table class="table table-hover">' . "\n";
+    $ret .= '<thead>' . "\n";
+    $ret .= '<tr>' . "\n";
+    foreach ($columns as $column) {
+        $ret .= '<th>' . $column . '</th>' . "\n";
+    }
+    //}
+    return $ret;
+}
+
+function table_line($values) {
+    $ret = '';
+    $ret .= '</tr>' . "\n";
+    $ret .= '</thead>' . "\n";
+    $ret .= '<tbody>' . "\n";
+    $ret .= '<tr>' . "\n";
+    $ret .= '<tr>' . "\n";
+    foreach ($values as $value) {
+        $ret .= '<td>' . "\n";
+        $ret .= $value . "\n";
+        $ret .= '</td>' . "\n";
+    }
+    $ret .= '</tr>' . "\n";
+    return $ret;
+}
+
+function table_footer() {
+    $ret = '';
+    $ret .= '</tr>' . "\n";
+    $ret .= '</tbody>' . "\n";
+    $ret .= '</table>' . "\n";
+    $ret .= '</div>' . "\n";
+    $ret .= '</div>' . "\n";
+    return $ret;
+}
+
+function myform_header($label, $action = '', $panelParams = null) {
+    $ret = '';
+    $class = 'panel panel-default';
+    $params = '';
+    if (isset($panelParams) && !empty($panelParams)) {
+        foreach ($panelParams as $param => $value) {
+            if ($param == 'class') {
+                $class .= ' ' . $value;
+            } else {
+                $params .= $param . '="' . $value . '" ';
+            }
+        }
+    }
+
+    $ret .= '<div class="' . $class . '" ' . $params . '>' . "\n";
+    $ret .= '<div class="panel-heading">' . $label . '</div>' . "\n";
+    $ret .= '<div id="formulaire">' . "\n";
+    $url = '';
+    if (isset($action) && $action != '') {
+        $url = $action;
+    }
+    $ret .= '<form style="margin-right:10px" class="form-horizontal" action="' . $url . '" method="post" accept-charset="utf-8" enctype="multipart/form-data">' . "\n";
+    return $ret;
+}
+
+function myform_footer($btnLabel = 'Valider') {
+    $ret = '';
+
+    /* Ajout du bouton */
+    $ret .= '<div class="form-group">' . "\n";
+    $ret .= '<div class="col-xs-12 text-center">' . "\n";
+    $ret .= '<button type = "submit" class = "btn">' . $btnLabel . '</button>' . "\n";
+    $ret .= '</div>';
+    $ret .= '</div>';
+
+    /* Fermeture des divs du formulaire */
+    $ret .= '</div>' . "\n";
+    $ret .= '</div>' . "\n";
+
+    return $ret;
+}
+
+function myform_input($name, $value = '', $label = '', $type = '', $txtDefaut = '') {
+
+    if (estNullOuVide($value)) {
+        $value = recupereSaisieUtilisateur($name);
+    }
+
+    $ret = '';
+    $ret .= '<div class="panel-body col-xs-offset-2 col-xs-8">' . "\n";
+    $ret .= '<!-- ' . $label . ' -->' . "\n";
+    $ret .= '<div class="form-group">' . "\n";
+    $ret .= '<label for="' . $name . '" class="control-label text-center">' . $label . '</label>' . "\n";
+    $ret .= '<input type="' . $type . '" name="' . $name . '" class="form-control" id="' . $name . '" value="' . $value . '" placeholder="' . $txtDefaut . '">' . "\n";
+    $ret .= myform_print_flashdata($name) . "\n";
+    $ret .= '</div>' . "\n";
+    $ret .= '</div>' . "\n";
+    $ret .= "\n";
+
+
+
+    return $ret;
+}
+
+function myform_hidden($name, $value) {
+    $ret = '';
+    $ret .= '<input type="hidden" name="' . $name . '" value="' . $value . '" />' . "\n";
+    return $ret;
+}
+
+function glyphicon_editer() {
+    $ret .= '';
+    $ret .= '<a href="#" class="btn btn-success"><span class="glyphicon glyphicon-pencil"></span></a>';
+    return $ret;
+}
+
+function glyphicon_supprimer() {
+    $ret .= '';
+    $ret .= '<a href="#" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></a>';
+    return $ret;
+}
+
+/* ----------------------------------------------------------------------------------------------- */
+/*                            Gestion des Flashdatas                                               */
+/* ----------------------------------------------------------------------------------------------- */
+
+function myform_set_flashdata_error($alert, $champ_saisie = '') {
+    $CI = get_instance();
+    if ($champ_saisie == '') {
+        $champ_saisie = 'page';
+    }
+
+    $CI->session->set_flashdata('error' . $champ_saisie, $alert);
+}
+
+function myform_set_flashdata_warning($warning, $champ_saisie = '') {
+    $CI = get_instance();
+    if ($champ_saisie == '') {
+        $champ_saisie = 'page';
+    }
+
+    $CI->session->set_flashdata('warning_' . $champ_saisie, $warning);
+}
+
+function myform_set_flashdata_info($info, $champ_saisie = '') {
+    $CI = get_instance();
+    if ($champ_saisie == '') {
+        $champ_saisie = 'page';
+    }
+
+    $CI->session->set_flashdata('info' . $champ_saisie, $info);
+}
+
+function myform_print_flashdata($champ_saisie = '') {
+
+    $CI = get_instance();
+    if ($champ_saisie == '') {
+        $champ_saisie = 'page';
+    }
+
+    $flashdata = $CI->session->flashdata();
+
+    if (!isset($flashdata) || empty($flashdata)) {
+        return '';
+    }
+
+    $class = '';
+    $message = '';
+    if (!isset($flashdata) || empty($flashdata)) {
+        return '';
+    }
+
+    /* Test des flashdatas de type info */
+    if (isset($flashdata['info_' . $champ_saisie]) && $flashdata['info_' . $champ_saisie] != null) {
+        $class = 'alert-info';
+        $message = $flashdata['info_' . $champ_saisie];
+    }
+
+    /* Test des flashdatas de type warning */
+    if (isset($flashdata['warning_' . $champ_saisie]) && $flashdata['warning_' . $champ_saisie] != null) {
+        $class = 'alert-warning';
+        $message = $flashdata['warning_' . $champ_saisie];
+    }
+
+
+    /* Test des flashdatas de type alerte */
+    if (isset($flashdata['error_' . $champ_saisie]) && $flashdata['error_' . $champ_saisie] != null) {
+        $class = 'alert-danger';
+        $message = $flashdata['error_' . $champ_saisie];
+    }
+
+    if ($message == null || $message == '') {
+        return '';
+    }
+
+    $ret = '<div class="alert ' . $class . '">' . "\n";
+    $ret .= $message . "\n";
+    $ret .= '</div>' . "\n";
+
+    return $ret;
+}
+
+?>

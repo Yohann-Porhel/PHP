@@ -1,0 +1,34 @@
+<?php
+
+/* ----------------------------------------------------------------- */
+/*        Affichage du formulaire de gestion d'un utilisateur        */
+/* ----------------------------------------------------------------- */
+
+echo myform_header('Portail Apologic BI | Fiche utilisateur', base_url('admin_utilisateur_controller/gestionUtilisateur'));
+
+echo myform_input('ut_email', (!empty($ut_email)) ? $ut_email : NULL, 'E-mail :', 'email', 'E-mail');
+echo myform_input('ut_password', (!empty($ut_password)) ? $ut_password : NULL, 'Mot de passe :', 'password', 'Mot de passe');
+echo myform_input('ut_password_confirmation', (!empty($ut_password)) ? $ut_password : NULL, 'Confirmation mot de passe :', 'password', 'Confirmation mot de passe');
+echo myform_input('ut_bo_login', (!empty($ut_bo_login)) ? $ut_bo_login : NULL, 'Login BO :', 'email', 'Login BO');
+echo myform_input('ut_bo_password', (!empty($ut_bo_password)) ? $ut_bo_password : NULL, 'Mot de passe BO :', 'password', 'Mot de passe BO');
+
+if (isset($clients)) {
+    echo myform_input_liste_header('id_apobi_client', 'Associer au client :');
+    foreach ($clients as $client) {
+        $line = '<OPTION value="' . $client->id_apobi_client . '">' . $client->cl_nom;
+        echo $line;
+    }
+    echo myform_input_liste_footer();
+} else {
+    echo myform_input_disabled('ut_client', (!empty($ut_client)) ? $ut_client : NULL, 'Associé au client :', 'text');
+    echo myform_input_invisible('id_apobi_client', (!empty($id_client)) ? $id_client : NULL);
+}
+
+echo bouton_radio('Administrateur', 'ut_admin', 0, ((isset($ut_admin)) && ($ut_admin === 'f')) ? 'checked="checked"' : NULL, 'NON', TRUE,((isset($ut_admin)) && ($ut_admin === 't')) ? 'checked="checked"' : NULL, 'OUI');
+echo bouton_radio('Accès API', 'ut_api', 0,  ((isset($ut_api)) && ($ut_api === 'f')) ? 'checked="checked"' : NULL, 'NON', TRUE,((isset($ut_api)) && ($ut_api === 't')) ? 'checked="checked"' : NULL, 'OUI');
+
+/* inputs (contenant les ID) non visibles par l'utilisateur */
+echo myform_input_invisible('id_apobi_client_utilisateur', (!empty($id_apobi_client_utilisateur)) ? $id_apobi_client_utilisateur : NULL);
+echo myform_input_invisible('id_apobi_utilisateur', (!empty($id_apobi_utilisateur)) ? $id_apobi_utilisateur : NULL);
+
+echo myform_footer_double(base_url('admin/utilisateurs'), 'Annuler', 'Valider');

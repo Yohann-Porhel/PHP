@@ -1,0 +1,24 @@
+<?php
+
+class Web_Commande_Controller extends MY_Controller {
+
+    public function inserer_commande() {
+
+        /* Insertion des paramètres dans la table "apobi_rapport_invite" */
+           
+        $this->load->model('apobi_rapport_invite_model');
+        $id_debut = $this->apobi_rapport_invite_model->inserer_rapport_invite($this->input->post('fk_apobi_rapport'), 1);
+        $id_fin = $this->apobi_rapport_invite_model->inserer_rapport_invite($this->input->post('fk_apobi_rapport'), 2);        
+
+        /* Insertion des paramètres dans la table "web_commande_input" */
+
+        $_params['ACTION'] = 'REPORT';
+        $_params['ID_CLIENT'] = $this->session->utilisateur_connecte_id_client;
+        $_params['VALEUR_RAPPORT_INVITE_' . $id_debut] = $this->input->post('anneeDebut');
+        $_params['VALEUR_RAPPORT_INVITE_' . $id_fin] = $this->input->post('anneeFin');
+
+        $this->load->model('web_commande_model');
+        $this->web_commande_model->insereCommande($this->session->utilisateur_connecte_id, $_params);
+    }
+
+}

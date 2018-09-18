@@ -1,0 +1,41 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Rapports_model
+ *
+ * @author sebastien.deschamps
+ */
+class apobi_rapport_model extends MY_Model {
+
+    protected $id = 'id_apobi_rapport';
+    protected $table = 'apobi_rapport';
+
+    public function getAllRapports() {
+
+        $query = $this->db->get($this->table);
+        return $query->result();
+    }
+
+    /* Permet d'obtenir une liste de rapports en fonction de l'id client */
+
+    public function obtenirRapportsParIdClient($id_client) {
+
+        $sql = 'SELECT * FROM ' . $this->table . ' ar '
+                . 'JOIN apobi_client_abonnement aca ON aca.fk_rapport = ar.id_apobi_rapport '
+                . 'WHERE fk_client = ?';
+        $p[0] = $id_client;
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            return false;         
+        }
+        return $query->result();
+    }
+
+}

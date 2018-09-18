@@ -1,0 +1,93 @@
+
+<?php
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of javascript_view
+ *
+ * @author yohann.porhel
+ */
+
+$columns[1] = 'Email';
+$columns[2] = 'Mot de passe';
+$columns[3] = 'Supprimer';
+
+echo myform_header('Portail Apologic BI | Test Javascript');
+
+    $utilisateur = new stdClass();
+    $utilisateur->id_apobi_utilisateur = 111;
+    $utilisateur->ut_email = 'test@apologic.fr';
+    $utilisateur->ut_password = '1234';
+
+
+    echo table_header($columns, "Liste des utilisateurs");
+
+    
+    $line[1] = $utilisateur->ut_email;
+    $line[2] = $utilisateur->ut_password;    
+    $line[3] = boutonsupprimer(base_url('admin_utilisateur_controller/supprimerUtilisateur/' . $utilisateur->id_apobi_utilisateur));
+    echo table_line($line);
+
+    echo table_footer();
+
+?>
+
+<div id="popupconfirmation" title="Confirmation de suppression" style="display: none">Etes-vous sûr ?</div>
+<script>  
+    
+    
+    
+    $(function () {               
+       
+        //jQuery('#id_apobi_utilisateur');
+        //$("#popupconfirmation").text('#id_apobi_utilisateur');
+        
+        $("#popupconfirmation").hide({          
+         
+        });
+
+        // définition de la boîte de dialogue
+        // la méthode jQuery dialog() permet de transformer une div en boîte de dialogue et de définir ses boutons
+        $("#popupconfirmation").dialog({
+            autoOpen: false,
+            width: 400
+        });
+
+        // comportement du bouton devant ouvrir la boîte de dialogue
+        $(".boutonsupprimer").click(function (event) {            
+            $("#popupconfirmation").text("Voulez-vous vraiment supprimer l'utilisateur : <?php echo $utilisateur->ut_email ?> ?");
+            // cette ligne est très importante pour empêcher les liens ou les boutons de rediriger
+            // vers une autre page avant que l'usager ait cliqué dans le popup
+            event.preventDefault();
+            // retrouve l'attribut href du lien sur lequel on a cliqué
+            var targetUrl = $(this).attr("href");
+            // on définit les boutons ici plutôt que plus haut puisqu'on a besoin de connaître l'URL de la page, qui n'était pas encore disponible sur le document.ready.
+            $("#popupconfirmation").dialog({
+                buttons: [
+                    {
+                        text: "Oui",
+                        click: function () {
+                            window.location.href = targetUrl;
+                        }
+                    },
+                    {
+                        text: "Non",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+
+            // affichage du popup
+            //$("#popupconfirmation").dialog("open");
+        });
+        
+    });
+
+</script>
+

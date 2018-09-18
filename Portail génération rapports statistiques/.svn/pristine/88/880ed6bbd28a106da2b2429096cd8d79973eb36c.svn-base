@@ -1,0 +1,55 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of developpement_controller
+ *
+ * @author sebastien.deschamps
+ */
+class Developpement_Controller extends MY_Controller {
+
+    public function index() {
+
+        $this->layout->view('developpement/developpement_view');
+    }
+
+    public function test_wait() {
+        session_write_close();
+        $this->layout->view('developpement/wait_view');
+    }
+
+    public function extraction_fichier($idWebCommandeOutputFichier) {
+
+        //echo 'Fichier : ' . $idWebCommandeOutputFichier;
+        $sql = "SELECT fic_contenu FROM apobi_web_commande_fichier_output WHERE id_apobi_web_commande_fichier_output = ?";
+        $p[0] = $idWebCommandeOutputFichier;
+
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            echo "Fichier non trouvé";
+            return false;
+        }
+
+        $result = $query->result();
+        $file_content = $result[0]->fic_contenu;
+
+
+        if (false) {
+            // Si on souhaite un enregistrement dans un fichier physique sur le serveur :
+            file_put_contents('pdfs/fichier_bytea_' . $idWebCommandeOutputFichier . '.pdf', pg_unescape_bytea($file_content));
+        } else {
+
+            // Si on souhaite un affichage direct dans le navigateur
+            header('Content-type: application/pdf');
+            header('Content-Disposition: inline; filename="downloaded.pdf"');
+            echo pg_unescape_bytea($file_content);
+        }
+    }
+
+}

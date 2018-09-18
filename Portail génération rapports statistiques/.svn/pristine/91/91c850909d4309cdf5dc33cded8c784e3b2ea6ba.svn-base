@@ -1,0 +1,115 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of utilisateur_controlle
+ *
+ * @author sebastien.deschamps
+ */
+class admin_utilisateur_controller extends MY_Controller {
+
+    public function index() {
+        $this->load->model('apobi_utilisateur_model');
+        $var['utilisateurs'] = $this->apobi_utilisateur_model->getAll();
+        $this->layout->view('utilisateurs/liste_utilisateurs_view', $var);
+    }
+
+    public function gestionUtilisateur() {
+
+        //Chargement de la librairie et création de règles
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('ut_email', 'E-mail', 'trim|required|valid_email');
+        $this->form_validation->set_rules('ut_password', 'Mot de passe', 'trim|required');
+
+        //Récupération des éléments saisis par l'utilisateur
+        $id_apobi_utilisateur = (!empty($this->input->post('id_apobi_utilisateur'))) ? $this->input->post('id_apobi_utilisateur') : NULL;
+        $ut_email = $this->input->post('ut_email');
+        $ut_password = $this->input->post('ut_password');
+        $ut_password_confirmation = $this->input->post('ut_password_confirmation');
+        
+        $ut_admin = $this->input->post('ut_admin');
+        $ut_api = $this->input->post('ut_api');
+        
+        $ut_bo_login = $this->input->post('ut_bo_login');
+        $ut_bo_password = $this->input->post('ut_bo_password');
+
+        //Vérification de l'égalité des mots de passe saisis
+        $this->verifierEgaliteMotsDePasse($ut_password, $ut_password_confirmation);
+
+        //Insertion des saisies dans un tableau de data
+        $data['id_apobi_utilisateur']   = $id_apobi_utilisateur;
+        $data['ut_email']               = $ut_email;
+        $data['ut_password']            = $ut_password;
+        $data['ut_admin']               = $ut_admin;
+        $data['ut_api']                 = $ut_api;
+        $data['ut_bo_login']            = $ut_bo_login;
+        $data['ut_bo_password']         = $ut_bo_password;
+
+        //Test de l'exécution correcte du formulaire 
+        if (!$this->form_validation->run()) {
+            myform_set_flashdata_warning('Erreur de validation');
+            return false;
+        }
+
+        //Utilisation de la fonction 'commit' pour insérer l'utilisateur en BDD
+        $this->load->model('apobi_utilisateur_model');
+        if (!$this->apobi_utilisateur_model->commit($data)) {
+            myform_set_flashdata_warning('Erreur de validation');
+            return false;
+        }
+
+        //Redirection vers la liste des utilisateurs
+        redirect('admin/utilisateurs');
+    }
+
+    public function supprimerUtilisateur($id_apobi_utilisateur){
+        
+        $this->load->model('apobi_utilisateur_model');
+        if (!$this->apobi_utilisateur_model->delete($id_apobi_utilisateur)){
+            myform_set_flashdata_warning('Erreur pendant la suppression');
+            return FALSE;
+        }
+        
+        redirect('admin/utilisateurs');
+    }
+    
+    public function ficheUtilisateur($id) {
+
+        $toto = array('trlter' => 'fdgfd', 'fdfds' => 'fdsfds');
+        echo json_encode($toto);
+        // echo "Ma fiche de l'utlisateur " . $id;
+    }
+
+    public function afficheCommitView() {
+        $this->layout->view('utilisateurs/commit_utilisateur_view');
+    }
+    
+    public function afficheCommitViewModification($id_apobi_utilisateur){
+                                
+        $data[] = $utilisateur->id_apobi_utilisateur;
+        $data[] = $utilisateur->ut_email;
+        $data[] = $utilisateur->ut_password;
+        $data[] = $utilisateur->ut_admin;
+        $data[] = $utilisateur->ut_api;
+        $data[] = $utilisateur->ut_bo_login;
+        $data[] = $utilisateur->ut_bo_password;
+        
+        $this->layout->view('utilisateurs/commit_utilisateur_view',$data);
+    }
+
+    public function verifierEgaliteMotsDePasse($password, $confirmation) {
+
+        if (isset($password) && isset($confirmation) && $password != null && $confirmation != null) {
+            if ($password == $confirmation) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}

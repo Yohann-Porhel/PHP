@@ -1,0 +1,9 @@
+<?php echo myform_header('Portail Apologic BI | Bienvenue sur l\'espace réservé aux administrateurs')?>
+
+<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span><a href="<?php echo base_url('admin/utilisateurs') ?>"> Liste des utilisateurs</a></p>
+<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span><a href="<?php echo base_url('admin/utilisateur/gestion') ?>"> Gestion d'un utilisateur</a></p> 
+<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span><a href="<?php echo base_url('admin/commande') ?>"> Commande de jetons</a></p>
+
+<?php echo bouton_redirection_accueil();
+
+

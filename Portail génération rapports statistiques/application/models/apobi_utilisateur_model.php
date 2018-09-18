@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * Description of apobi_utilisateur_model
+ *
+ * @author sebastien.deschamps
+ */
+class apobi_utilisateur_model extends MY_Model {
+
+    protected $id = 'id_apobi_utilisateur';
+    protected $table = 'apobi_utilisateur';
+
+    /* Permet de vérifier la conformité des données saisies par l'utilisateur */
+
+    function getByEmailAndPassword($email, $password) {
+
+        $mode_dev = $this->config->item('mode_developpement');
+        if ($mode_dev === true && $password == 'ce7d358b84a600ace0d342bc289c090243b7a9e8') {
+            // Si on est en mode développement, et que le mot de passe saisi est '@pologic'
+            $sql = 'SELECT * FROM ' . $this->table . ' WHERE apobi_utilisateur.ut_email = ?';
+            $p[0] = $email;        
+        } else {
+            // Si on est en mode 'normal' il faut impérativement saisir le bon mot de passe
+            $sql = 'SELECT * FROM ' . $this->table . ' WHERE apobi_utilisateur.ut_email = ? AND apobi_utilisateur.ut_password = ?';
+            $p[0] = $email;
+            $p[1] = $password;
+        }
+
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            return false;
+        } else {
+            foreach ($query->result() as $row) {
+                return $row;
+            }
+        }
+    }
+
+    /* Permet de vérifier si un utilisateur est administrateur */
+
+    function controleEstAdministrateur($email) {
+
+        $sql = 'SELECT ut_admin FROM ' . $this->table . ' WHERE ut_email = ?';
+        $p[0] = $email;
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            return false;
+        } else {
+            foreach ($query->result() as $row) {
+                return $row->ut_admin;
+            }
+        }
+    }
+
+    /* Permet de vérifier si un utilisateur a accès aux API */
+
+    function controleDroitsAPI($email) {
+
+        $sql = 'SELECT ut_api FROM ' . $this->table . ' WHERE ut_email = ?';
+        $p[0] = $email;
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            return false;
+        } else {
+            foreach ($query->result() as $row) {
+                return $row->ut_api;
+            }
+        }
+    }
+
+}

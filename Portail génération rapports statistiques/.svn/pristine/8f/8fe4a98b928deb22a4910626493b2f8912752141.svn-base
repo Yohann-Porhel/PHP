@@ -1,0 +1,65 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of apobi_utilisateur_model
+ *
+ * @author sebastien.deschamps
+ */
+class apobi_utilisateur_model extends MY_Model {
+
+    protected $id = 'id_apobi_utilisateur';
+    protected $table = 'apobi_utilisateur';   
+    
+    /* Permet de vérifier la conformité des données saisies par l'utilisateur */
+    function getByEmailAndPassword($email, $password) {
+
+        $sql = 'SELECT * FROM ' . $this->table. ' WHERE apobi_utilisateur.ut_email = ? AND apobi_utilisateur.ut_password = ?';
+        $p[0] = $email;
+        $p[1] = $password;
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /*function createUser($sa_ut_email, $sa_ut_password, $sa_ut_bo_login, $sa_ut_bo_password){
+        
+        $sql = 'INSERT INTO ' . $this->table . ' VALUES (?,?,?,?,?)';
+        $p[0] = $sa_ut_email;
+        $p[1] = $sa_ut_password;
+        $p[2] = $sa_ut_bo_login;
+        $p[3] = $sa_ut_bo_password;
+        
+        if ($this->db->affected_rows() == '1') {
+            $this->logging->logInfo('Ajout/Modification d\'un enregistrement dans la table : ' . $this->table);
+        } else {
+            $this->logging->logErreur('Erreur lors de l\'Ajout/Modification d\'un enregistrement dans la table : ' . $this->table);
+        }
+        
+        return true;        
+    }
+    
+    public function getByEmailAndPassword_old($_email,$_password) {
+               
+        $this->db->where($this->email, $_email);
+        $this->db->where($this->password, $_password);
+        $query = $this->db->get($this->table);
+        $res = $query->result();
+
+        if (!isset($res) || empty($res)) {
+            $this->session->set_flashdata('error', 'Aucun enregistrement trouvé dans la table ' . $this->table . ' pour l\'email : ' . $_email .' et pour le password : ' . $_password.'');
+            return null;
+        }
+        return $res[0];
+    }*/
+    
+}

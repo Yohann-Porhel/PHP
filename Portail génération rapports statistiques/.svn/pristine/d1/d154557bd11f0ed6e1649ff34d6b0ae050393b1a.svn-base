@@ -1,0 +1,249 @@
+<?php
+
+/**
+ * Description of utilisateur_controller
+ *
+ * @author sebastien.deschamps
+ */
+class admin_utilisateur_controller extends MY_Controller_Administrateur {
+
+    public function index() {
+        $this->load->model('apobi_utilisateur_model');
+        $var['utilisateurs'] = $this->apobi_utilisateur_model->getAll();
+        $this->layout->view('utilisateurs/liste_utilisateurs_view', $var);
+    }
+
+    /* ----------------------------------------------------------------- */
+    /*     Méthodes Ajout/Modification/Suppression d'un utilisateur      */
+    /* ----------------------------------------------------------------- */
+
+    public function gestionUtilisateur() {
+
+        //Chargement de la librairie et création de règles
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('ut_email', 'E-mail', 'trim|required|valid_email|min_length[8]');
+        $this->form_validation->set_rules('ut_password', 'Mot de passe', 'trim|required');
+
+        //Récupération des éléments saisis par l'utilisateur
+        $id_apobi_utilisateur = (!empty($this->input->post('id_apobi_utilisateur'))) ? $this->input->post('id_apobi_utilisateur') : NULL;
+        $id_client = '6'; //$this->input->post('id_client');
+        $id_apobi_client_utilisateur = (!empty($this->input->post('id_apobi_client_utilisateur'))) ? $this->input->post('id_apobi_client_utilisateur') : NULL;
+        $ut_email = $this->input->post('ut_email');
+        $ut_password_en_clair = $this->input->post('ut_password');
+        $ut_password_confirmation = $this->input->post('ut_password_confirmation');
+        $this->verifierEgaliteMotsDePasse($ut_password_en_clair, $ut_password_confirmation);
+        $ut_admin = $this->input->post('ut_admin');
+        $ut_api = $this->input->post('ut_api');
+        $ut_bo_login = $this->input->post('ut_bo_login');
+        $ut_bo_password = $this->input->post('ut_bo_password');
+
+        $this->controleFormatMail($ut_email);
+        $ut_password = $this->cryptageMotDePasse($ut_email, $ut_password_en_clair);
+
+        //Insertion des saisies dans un tableau de data
+        $donnees['id_apobi_utilisateur'] = $id_apobi_utilisateur;
+        $donnees['ut_email'] = $ut_email;
+        $donnees['ut_password'] = $ut_password;
+        $donnees['ut_admin'] = $ut_admin;
+        $donnees['ut_api'] = $ut_api;
+        $donnees['ut_bo_login'] = $ut_bo_login;
+        $donnees['ut_bo_password'] = $ut_bo_password;
+
+        //Test de l'exécution correcte du formulaire 
+        if (!$this->form_validation->run()) {
+            myform_set_flashdata_warning('Erreur de validation');
+            return false;
+        }
+
+        //Utilisation de la fonction 'commit' pour insérer l'utilisateur en BDD
+        $this->load->model('apobi_utilisateur_model');
+        if (!$this->apobi_utilisateur_model->commit($donnees)) {
+            myform_set_flashdata_warning('Erreur de validation');
+            return false;
+        }
+
+        //Récupération de l'identifiant du nouvel utilisateur
+        $nouvel_utilisateur = $this->apobi_utilisateur_model->getByEmailAndPassword($ut_email, $ut_password);
+        $id_utilisateur = $nouvel_utilisateur->id_apobi_utilisateur;
+
+        $data_client_utilisateur['id_apobi_client_utilisateur'] = $id_apobi_client_utilisateur;
+        $data_client_utilisateur['fk_apobi_client'] = $id_client;
+        $data_client_utilisateur['fk_apobi_utilisateur'] = $id_utilisateur;
+
+        $this->load->model('apobi_client_utilisateur_model');
+        if (!$this->apobi_client_utilisateur_model->commit($data_client_utilisateur)) {
+            myform_set_flashdata_warning('Erreur de création de la relation utilisateur/client');
+            return false;
+        }
+        //Redirection vers l'envoi du mail de confirmation  
+        $this->session->set_userdata($ut_password_en_clair);        
+        redirect('admin/utilisateur/email_confirmation');
+    }
+
+    /* Permet la suppression de l'utilisateur et de la relation utilisateur/client */
+
+    public function supprimerUtilisateur($id_apobi_utilisateur) {
+
+        $this->load->model('apobi_utilisateur_model');
+        $utilisateur = $this->apobi_utilisateur_model->get($id_apobi_utilisateur);
+        $this->load->model('apobi_client_utilisateur_model');
+
+        if (!$this->apobi_client_utilisateur_model->supprimerRelationUtilisateurClient($id_apobi_utilisateur)) {
+            if (!$this->apobi_utilisateur_model->delete($id_apobi_utilisateur)) {
+                myform_set_flashdata_warning('Erreur lors de la suppression de : "' . $utilisateur->ut_email . '"');
+                return FALSE;
+            }
+            myform_set_flashdata_info('Suppression de l\'utilisateur effectuée avec succès pour : "' . $utilisateur->ut_email . '"');
+            redirect('admin/utilisateurs');
+        }
+        myform_set_flashdata_warning('Erreur lors de la suppression de la relation Utilisateur/Client');
+        return FALSE;
+    }
+
+    /* ----------------------------------------------------------------- */
+    /*       Affichage des formulaires de gestion d'un utilisateur       */
+    /* ----------------------------------------------------------------- */
+
+    /* Permet d'afficher le formulaire vide */
+
+    public function afficheCommitView() {
+        $this->layout->view('utilisateurs/commit_utilisateur_view');
+    }
+
+    /* Permet d'afficher le formulaire pré-rempli pour la modification de l'utilisateur */
+
+    public function ficheUtilisateur($id) {
+
+        $this->load->model('apobi_utilisateur_model');
+        $this->load->model('apobi_client_utilisateur_model');
+        $utilisateur = $this->apobi_utilisateur_model->get($id);
+        $client = $this->apobi_client_utilisateur_model->obtenirRelationUtilisateurClient($id);
+
+        $data['id_apobi_utilisateur'] = $utilisateur->id_apobi_utilisateur;
+        $data['id_client'] = $client->fk_apobi_client;
+        $data['id_apobi_client_utilisateur'] = $client->id_apobi_client_utilisateur;
+        $data['ut_email'] = $utilisateur->ut_email;
+        $data['ut_client'] = $client->cl_nom;
+        $data['ut_password'] = $utilisateur->ut_password;
+        $data['ut_admin'] = $utilisateur->ut_admin;
+        $data['ut_api'] = $utilisateur->ut_api;
+        $data['ut_bo_login'] = $utilisateur->ut_bo_login;
+        $data['ut_bo_password'] = $utilisateur->ut_bo_password;
+
+        $this->session->set_userdata($data);
+
+        $this->layout->view('utilisateurs/commit_utilisateur_view', $data);
+    }
+
+    public function recuperationInfosUtilisateur() {
+
+        $data['id_apobi_utilisateur'] = $this->session->id_apobi_utilisateur;
+        $data['id_client'] = $this->session->fk_apobi_client;
+        $data['id_apobi_client_utilisateur'] = $this->session->id_apobi_client_utilisateur;
+        $data['ut_email'] = $this->session->ut_email;
+        $data['ut_client'] = $this->session->cl_nom;
+        $data['ut_password'] = $this->session->ut_password;
+        $data['ut_admin'] = $this->session->ut_admin;
+        $data['ut_api'] = $this->session->ut_api;
+        $data['ut_bo_login'] = $this->session->ut_bo_login;
+        $data['ut_bo_password'] = $this->session->ut_bo_password;
+
+        $id_apobi_client = $this->input->post('id_apobi_client');
+
+        //$this->session->set_userdata($id_apobi_client);
+        $this->layout->view('utilisateurs/commit_utilisateur_view', $data);
+    }
+
+    /* ----------------------------------------------------------------- */
+    /*         Fonctions de contrôle des saisies de l'utilisateur        */
+    /* ----------------------------------------------------------------- */
+
+    /* Permet de contrôler l'égalité entre le mot de passe et sa confirmation */
+
+    public function verifierEgaliteMotsDePasse($password, $confirmation) {
+
+        if (isset($password) && isset($confirmation) && $password != null && $confirmation != null) {
+            if ($password == $confirmation) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* Permet de contrôler que le mail respecte les critères de format définis */
+
+    public function controleFormatMail($ut_email) {
+
+        if (isset($ut_email) && $ut_email != null) {
+
+            if (!filter_var($ut_email, FILTER_VALIDATE_EMAIL) === false) {
+                return true;
+            }
+        }
+        return false;
+    }    
+
+    private function envoiEmailChangementMotDePasse($idUserCree, $motDePasseEnClair, $envoyerEgalementAUtilisateurFinal) {
+
+        $idUserCree = $this->input->post('ut_email');
+        $motDePasseEnClair = $this->input->post('ut_password');
+
+        /*
+          $config['protocol'] = 'smtp';
+          $config['smtp_host'] = 'smtp.gmail.com';
+          $config['smtp_port'] = 587;
+          $config['smtp_user'] = 'yohann.porhel@gmail.com';
+          $config['smtp_pass'] = 'xxxxxxx';
+          $config['mailtype'] = 'text';
+          $config['charset'] = 'utf-8';
+          $config['wordwrap'] = TRUE;
+        */
+        $config = Array(
+            'protocol' => $this->config->item('protocol'),
+            'smtp_host' => $this->config->item('smtp_host'),
+            'smtp_port' => $this->config->item('smtp_port'),
+            'smtp_user' => $this->config->item('smtp_user'),
+            'smtp_pass' => $this->config->item('smtp_pass'),
+            'mailtype' => $this->config->item('mailtype'),
+            'charset' => $this->config->item('charset'),
+            'wordwrap' => $this->config->item('wordwrap')
+        );
+        //   echo print_r($config);
+
+        $this->load->library('email'); //,$config);
+        $this->email->initialize($config);
+        
+        $this->email->set_newline("\r\n");
+        
+        $this->email->from('yohann.porhel@gmail.com');
+        $this->email->to('yohann.porhel@gmail.com');
+        $this->email->subject('Vos identifiants de connexion Apologic BI');
+        $this->email->message('Test envoi mail');
+
+        $this->load->model('utilisateur_model');
+        $user = $this->utilisateur_model->get($idUserCree);
+            
+        $this->email->send();        
+            
+        /*if (!$this->email->send()) {
+             $this->email->print_debugger();
+        }*/
+
+        //myform_set_flashdata_warning("Résultat envoi email : " . $resSend);
+        myform_set_flashdata_warning('La mise à jour de l\'utilisateur a été effectuée avec succès pour : " ' . $ut_email . ' "');
+        redirect('admin/utilisateurs');        
+    }
+    
+    /* function d'affichage pour les tests -- A SUPPRIMER -- */
+
+    public function afficheJavascriptView() {
+
+        $this->layout->view('developpement/javascript_view');
+    }
+
+    public function afficheEnvoiEmailView() {
+
+        $this->layout->view('developpement/envoi_email_view');
+    }
+
+}

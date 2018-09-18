@@ -1,0 +1,26 @@
+<?php
+
+class Web_Commande_Controller extends MY_Controller {
+    /* Permet d'insérer les paramètres d'une commande de rapport dans la table "web_commande_input" */
+
+    public function inserer_commande() {
+
+        $_params['ACTION'] = 'REPORT';
+        $_params['ID_CLIENT'] = $this->session->utilisateur_connecte_id_client;
+
+        $post = $this->input->post();
+
+        /* On parcourt toutes les données POST et on les prépare pour insertion dans la table "web_commande_input" */
+        foreach ($post as $k => $v) {
+            $_params[$k] = $v;
+        }
+        
+        $this->load->model('web_commande_model');
+        $this->web_commande_model->insereCommande($this->session->utilisateur_connecte_id, $_params);
+        
+        $this->load->model('apobi_rapport_model');
+        $resultat['rapport'] = $this->apobi_rapport_model->get($_params['ID_RAPPORT']);
+        $this->layout->view('rapports/loader_view', $resultat);
+    }
+
+}

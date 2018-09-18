@@ -1,0 +1,19 @@
+<?php
+echo myform_header('Portail Apologic BI | Commande de jetons', base_url('admin_client_controller/insererCommandeJetons'));
+
+if (isset($clients)) {
+    echo myform_input_liste_header('id_apobi_client', 'Client à créditer :');   
+    foreach ($clients as $client) {
+    $line = '<OPTION value="'.$client->id_apobi_client.'">' . $client->cl_nom;
+    echo $line;
+    }
+    echo myform_input_liste_footer();
+}
+echo myform_input_nombre_ou_date('cj_quantite', 0, 'Quantité de jetons :', 'number', 0, 0);
+echo myform_input_nombre_ou_date('cj_date_debut_validite', date("Y-m-d"), 'Date de début de validité :', 'date',date("Y-m-d"), 'Date de début de validité');
+echo myform_input('cj_commentaire', '', 'Commentaire :', 'text', 'Saisir ici votre commentaire');
+echo myform_input_disabled('fk_utilisateur_creation', (!empty($this->session->utilisateur_connecte_email)) ? $this->session->utilisateur_connecte_email : NULL, 'Créé par :', 'email', 'Créé par');
+echo myform_input_disabled('cj_date_creation', date("Y-m-d"), 'Date de création :', 'date', 'Date de création');
+
+echo myform_footer_double(base_url('admin'), 'Annuler', 'Valider');
+

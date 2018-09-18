@@ -1,0 +1,9 @@
+<?php
+
+class apobi_client_jeton_model extends MY_Model {
+    
+    protected $id = 'id_apobi_client_jeton';
+    protected $table = 'apobi_client_jeton';    
+    
+}
+

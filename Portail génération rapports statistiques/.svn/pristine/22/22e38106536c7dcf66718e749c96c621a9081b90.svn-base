@@ -1,0 +1,22 @@
+<h3>Développement</h3>
+<a href="<?php echo base_url('utilisateurs') ?>">Liste des utilisateurs</a></p>
+
+
+<script type="text/javascript">
+function executer() {
+    $.get("<?php echo base_url('rapport/genere_rapport') ?>");
+    return false;
+}
+</script>
+
+<a href="#" onclick="executer();">Lancer la génération du rapport (javascript)</a></p>
+<a href="<?php echo base_url('logs/infos') ?>">Logs d'information</a></p>
+<a href="<?php echo base_url('logs/erreurs') ?>">Logs d'erreur</a></p>
+<a href="<?php echo base_url('rapport/genere_rapport') ?>">Lancer la génération du rapport (normal)</a></p>
+
+<h2>Yohann :</h2>
+<a href="<?php echo base_url('connexion') ?>">Tester la connexion</a></p>
+<a href="<?php echo base_url('') ?>">Création d'un utilisateur</a></p> 
+
+
+

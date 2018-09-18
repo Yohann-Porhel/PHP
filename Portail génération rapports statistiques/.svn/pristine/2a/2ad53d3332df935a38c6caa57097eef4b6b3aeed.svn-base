@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Description of apobi_client_abonnement_model
+ *
+ * @author yohann.porhel
+ */
+class apobi_client_abonnement_model extends MY_Model {
+    
+    protected $id = 'id_apobi_client_abonnement';
+    protected $table = 'apobi_client_abonnement';    
+    
+}

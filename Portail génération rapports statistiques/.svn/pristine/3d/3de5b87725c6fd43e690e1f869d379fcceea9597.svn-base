@@ -1,0 +1,48 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of developpement_controller
+ *
+ * @author sebastien.deschamps
+ */
+class Developpement_Controller extends MY_Controller {
+
+    public function index() {
+
+        $this->layout->view('developpement/developpement_view');
+    }
+
+    public function test_wait() {
+        session_write_close();
+        $this->layout->view('developpement/wait_view');
+    }
+
+    public function extraire_fichier_web_commande_output($cmd_guid) {
+
+        //echo 'Fichier : ' . $idWebCommandeOutputFichier;
+        $sql = "SELECT fic_contenu FROM apobi_web_commande_fichier_output WHERE cmd_guid = ?";
+        $p[0] = $cmd_guid;
+
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            echo "Fichier non trouvé";
+            return false;
+        }
+
+        $result = $query->result();
+        $file_content = $result[0]->fic_contenu;
+
+        // Si on souhaite un affichage direct dans le navigateur
+        header('Content-type: application/pdf');
+        header('Content-Disposition: inline; filename="downloaded.pdf"');
+        echo pg_unescape_bytea($file_content);
+    }
+
+}

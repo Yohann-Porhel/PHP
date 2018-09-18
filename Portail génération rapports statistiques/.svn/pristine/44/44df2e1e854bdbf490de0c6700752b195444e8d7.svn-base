@@ -1,0 +1,158 @@
+<?php
+
+function insert_image($relativePath, $alt = '') {
+    return '<img src="' . image_url($relativePath) . '" alt="' . $alt . '"></img>';
+}
+
+function image_url($relativePath) {
+    return base_url('images/' . $relativePath);
+}
+
+function getChecked($_var) {
+    if (isset($_var) && ($_var == 1 || $_var == true)) {
+        return 'yes';
+    } else {
+        return 'false';
+    }
+}
+
+function isTrue($val) {
+    if (isset($val) && $val == true) {
+        $val = true;
+    } else {
+        $val = false;
+    }
+    return $val;
+}
+
+function is_id_valide($_id) {
+    if (!isset($_id) || $_id == null || !is_numeric($_id)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function boolean_to_string($val) {
+    if (isset($val) && $val == true) {
+        return "oui";
+    } else {
+        return "non";
+    }
+}
+
+//put your code here
+function date_fr2us($date_fr) {
+    $array_date_fr = explode("-", $date_fr); //explode en un array
+    $date_us = $array_date_fr[2] . '-' . $array_date_fr[1] . '-' . $array_date_fr[0]; // annee, jour, mois
+    return $date_us;
+}
+
+function date_us2fr($date_us) {
+    $array_date_us = explode("-", $date_us); //explode en un array
+    $date_us = $array_date_us[2] . '-' . $array_date_us[1] . '-' . $array_date_us[0]; // annee, jour, mois
+    return $date_us;
+}
+
+function dateHeureVersChaine($datetime) {
+    date_default_timezone_set('Europe/Paris');
+    $date = new DateTime($datetime);
+    return $date->format('d-m-Y H:i:s');
+}
+
+function dateVersChaine($date) {
+    date_default_timezone_set('Europe/Paris');
+    $date = new DateTime($date);
+    return $date->format('d-m-Y');
+}
+
+function current_datetime() {
+    date_default_timezone_set('Europe/Paris');
+    return date("Y-m-d G:i:s");
+}
+
+function getGUID() {
+    if (function_exists('com_create_guid')) {
+        return com_create_guid();
+    } else {
+        mt_srand((double) microtime() * 10000); //optional for php 4.2.0 and up.
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45); // "-"
+        $uuid = chr(123)// "{"
+                . substr($charid, 0, 8) . $hyphen
+                . substr($charid, 8, 4) . $hyphen
+                . substr($charid, 12, 4) . $hyphen
+                . substr($charid, 16, 4) . $hyphen
+                . substr($charid, 20, 12)
+                . chr(125); // "}"
+        return $uuid;
+    }
+}
+
+//Permet de controler qu'un champ est null ou vide
+function estNull($var) {
+    if (!isset($var) || empty($var) || $var == null) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//Permet de controler qu'un champ est null ou vide
+function estNullOuVide($var) {
+    if (!isset($var) || empty($var) || $var == null) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//Permet de controler l'existence d'un index d'un tableau
+function indexTableauExiste($index, $tableau) {
+    
+    if (estNullOuVide($tableau)) {
+        return false;
+    }
+  
+    return array_key_exists($index, $tableau);
+    
+}
+
+//Permet de mémoriser une valeur saisie
+function memoriseSaisieUtilisateur($nomChampInput, $valeurSaisie) {
+
+    if (estNull($nomChampInput) || estNull($valeurSaisie)) {
+        return false;
+    }
+    
+    // On récupère le contenu du tableau "saisies_utilisateur", afin de le compléter avec la nouvelle saisie
+    $CI = get_instance();
+    $saisies_utilisateur = $CI->session->flashdata('saisies_utilisateur');
+
+    // On ajoute la nouvelle saisie dans le tableau
+    $saisies_utilisateur[$nomChampInput] = $valeurSaisie;
+
+    // On écrase l'ancien tableau dans la session, par le nouveau mis à jour
+    $CI->session->set_flashdata('saisies_utilisateur', $saisies_utilisateur);
+
+    return true;
+}
+
+//Permet de récupérer les saisies d'un utilisateur
+function recupereSaisieUtilisateur($nomChampInput) {
+
+    $CI = get_instance();
+    $saisies_utilisateur = $CI->session->flashdata('saisies_utilisateur');
+
+    if (estNull($saisies_utilisateur)) {
+        return null;
+    }
+
+    if (!indexTableauExiste($nomChampInput,$saisies_utilisateur)) {
+        return null;
+    }
+    
+    return $saisies_utilisateur[$nomChampInput];
+}
+
+?>

@@ -1,0 +1,23 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Catalogue_Controller extends MY_Controller {
+    
+    
+    public function index() {
+        
+        $this->load->model('apobi_rapport_model');
+        $var['rapports'] = $this->apobi_rapport_model->getAllRapports();
+        
+        $var['abonnements'] = $this->apobi_rapport_model->obtenirRapportsParIdClient($this->session->utilisateur_connecte_id_client);
+        
+        $this->layout->view('catalogue/catalogue_view',$var);
+        
+    }
+    
+    
+}
+
+
+?>

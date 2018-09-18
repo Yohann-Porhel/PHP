@@ -1,0 +1,26 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of utilisateur_controlle
+ *
+ * @author sebastien.deschamps
+ */
+class utilisateur_controller extends MY_Controller {
+    
+    
+    public function index() {
+        
+        $this->load->model('apobi_utilisateur_model');
+        $var['utilisateurs'] = $this->apobi_utilisateur_model->getAll();
+        $this->layout->view('utilisateurs/liste_utilisateurs_view', $var);
+        
+    }
+    
+    
+}

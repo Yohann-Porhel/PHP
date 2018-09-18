@@ -1,0 +1,49 @@
+<?php
+
+class Web_Commande_Controller extends MY_Controller {
+    /* Permet d'insérer les paramètres d'une commande de rapport dans la table "web_commande_input" */
+
+    public function inserer_commande() {
+
+        $_params['ACTION'] = 'REPORT';
+        $_params['ID_CLIENT'] = $this->session->utilisateur_connecte_id_client;
+
+        $post = $this->input->post();
+
+        /* On parcourt toutes les données POST et on les prépare pour insertion dans la table "web_commande_input" */
+        foreach ($post as $k => $v) {
+            $_params[$k] = $v;
+        }
+
+        $this->load->model('web_commande_model');
+        $resultat['cmd_guid'] = $this->web_commande_model->insereCommande($this->session->utilisateur_connecte_id, $_params);
+        //$resultat['clean_cmd_guid'] = str_replace('{', '', $resultat['cmd_guid']);
+        //$resultat['clean_cmd_guid'] = str_replace('}', '', $resultat['cmd_guid']);
+
+        $this->load->model('apobi_rapport_model');
+        $resultat['rapport'] = $this->apobi_rapport_model->get($_params['ID_RAPPORT']);
+        $this->layout->view('rapports/loader_view', $resultat);
+    }
+
+    public function afficher_etat_commande($cmd_guid) {
+
+
+
+        $this->load->model('web_commande_model');
+        $commande = $this->web_commande_model->getByGuid($cmd_guid);
+        // $commande_traitee = $commande->cmd_traitee;
+        if (isset($commande) && $commande != null && $commande->cmd_guid == $cmd_guid) {
+            
+            if (isset($commande->cmd_traitee) && $commande->cmd_traitee==true) {
+                echo 'TERMINE';// . time();
+                return;
+            } else {
+                echo 'EN_COURS' . time();
+                return;
+            }
+            
+        }
+        echo 'ERREUR:Commande non trouvée';
+    }
+
+}

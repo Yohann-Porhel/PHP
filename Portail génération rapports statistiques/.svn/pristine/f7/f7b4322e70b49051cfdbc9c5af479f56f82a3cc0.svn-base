@@ -1,0 +1,17 @@
+<!-- Imports et headers -->
+<?php $this->load->view('../templates/up/header'); ?>
+
+<!-- Logo du groupe -->
+<div id="logo-up"></div>
+
+<!-- Menu du haut -->
+<div id="top-menu"><?php $this->load->view('../templates/up/top_menu'); ?></div>
+
+<!-- Menu de gauche -->
+<div id="left-menu"><?php $this->load->view('../templates/up/left_menu'); ?></div>
+
+<!-- Contenu principal -->
+<div id="content"><?php echo $content . "\n"; ?> </div>
+
+<!-- Pied de page -->
+<?php $this->load->view('../templates/up/footer'); ?>

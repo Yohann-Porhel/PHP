@@ -1,0 +1,27 @@
+<body onload="js_rapport_disponible()" style="margin:0;">
+
+    <div id="spinLoader"></div>
+
+    <?php echo bouton_rapport_annuler(base_url('rapports')) ?>
+
+    <div style="display:none;" id="messageTraitement" class="animate-bottom">
+        <h2>Votre rapport est disponible</h2>
+        <p>Traitement terminé pour : <b><?php echo $rapport->ra_libelle ?></b></p>
+        <?php echo bouton_rapport_disponible(base_url('rapports')) ?>
+    </div>
+
+    <script>
+        var myVar;
+
+        function js_rapport_disponible() {
+            myVar = setTimeout(showPage, 3000);
+        }
+
+        function showPage() {
+            document.getElementById("spinLoader").style.display = "none";
+            document.getElementById("annulerRapport").style.display = "none";
+            document.getElementById("messageTraitement").style.display = "block";
+        }
+    </script>
+
+</body>

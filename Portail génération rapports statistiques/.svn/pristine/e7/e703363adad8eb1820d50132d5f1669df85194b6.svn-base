@@ -1,0 +1,180 @@
+.gi-2x{font-size: 2em;}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}
+
+
+input.switch:empty
+{
+    margin-left: -999px;    
+}
+
+input.switch:empty ~ label
+{
+    position: relative;
+    float: left;
+    line-height: 1.6em;
+    text-indent: 4em;
+    margin: 0.2em 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input.switch:empty ~ label:before, 
+input.switch:empty ~ label:after
+{
+    position: absolute;
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    content: ' ';
+    width: 3.6em;
+    background-color: #c33;
+    border-radius: 0.3em;
+    box-shadow: inset 0 0.2em 0 rgba(0,0,0,0.3);
+    -webkit-transition: all 100ms ease-in;
+    transition: all 100ms ease-in;
+}
+
+input.switch:empty ~ label:after
+{
+    width: 1.4em;
+    top: 0.1em;
+    bottom: 0.1em;
+    margin-left: 0.1em;
+    background-color: #fff;
+    border-radius: 0.15em;
+    box-shadow: inset 0 -0.2em 0 rgba(0,0,0,0.2);
+}
+
+input.switch:checked ~ label:before
+{
+    background-color: #393;
+}
+
+input.switch:checked ~ label:after
+{
+    margin-left: 2.1em;
+}
+
+.bouton_test{    
+    color: yellowgreen;
+    text-transform: uppercase;    
+}
+
+.form_ajouter{
+    display: inline-block;    
+    width: 87%;
+    height: 29px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.top_menu_deconnexion{
+    display: inline-block;   
+}
+
+#spinLoader{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 28px solid #3498db;
+    border-right: 28px solid #ccccff;
+    border-bottom: 28px solid #3498db;
+    border-left: 28px solid #ccccff;
+    width: 200px;
+    height: 200px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg);}
+    100% { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin{
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
+
+.animate-bottom {
+    position: relative;    
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+}
+
+#messageTraitement {
+    display: none;
+    text-align: center;
+}
+
+/*.chargement {
+    display:none;
+    position: fixed;
+    z-index:1000;
+    top:0;
+    left:0;
+    height:100%;
+    width:100%;
+    background:rgba( 255, 255, 255, .8 )
+        url('http://i.stck.imgr.com/FhHRx.gif')
+        50% 50%
+        no-repeat;    
+}
+
+#load_screen{
+    background: #000;
+    opacity: 1;
+    position: fixed;
+    z-index:10;
+    top: 0px;
+    width: 100%;
+    height: 1600px;
+}
+
+#load_screen > #loading{
+    color:#FFF;
+    width: 120px;
+    height: 24px;
+    margin: 300px auto;
+}
+
+<!-- div class="loader"></div>
+<div id="loading">Génération du rapport...</div>
+<div id=load_screen"></div-->
+
+*/

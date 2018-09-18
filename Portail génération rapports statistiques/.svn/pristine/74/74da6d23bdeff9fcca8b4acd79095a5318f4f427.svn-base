@@ -1,0 +1,10 @@
+<?php
+
+class admin_controller extends MY_Controller_Administrateur {
+
+    public function index() {
+
+        $this->layout->view('utilisateurs/administrateur_espace_view');
+    }
+
+}

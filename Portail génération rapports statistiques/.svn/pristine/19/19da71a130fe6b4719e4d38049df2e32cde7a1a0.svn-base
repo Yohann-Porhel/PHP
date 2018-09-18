@@ -1,0 +1,37 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of apobi_utilisateur_model
+ *
+ * @author sebastien.deschamps
+ */
+class apobi_utilisateur_model extends MY_Model {
+
+    protected $id = 'id_apobi_utilisateur';
+    protected $table = 'apobi_utilisateur';
+
+    /* Permet de vérifier la conformité des données saisies par l'utilisateur */
+
+    function getByEmailAndPassword($email, $password) {
+
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE apobi_utilisateur.ut_email = ? AND apobi_utilisateur.ut_password = ?';
+        $p[0] = $email;
+        $p[1] = $password;
+        $query = $this->db->query($sql, $p);
+        
+        if ($query->num_rows() == 0) {
+            return false;
+        } else {
+            foreach ($query->result() as $row) {
+                return $row;
+            }
+        }
+    }
+
+}

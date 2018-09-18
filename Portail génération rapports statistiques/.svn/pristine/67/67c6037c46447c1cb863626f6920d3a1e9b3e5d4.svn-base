@@ -1,0 +1,87 @@
+/* ------------------------- */
+/* Style lié au template UP  */
+/* ------------------------- */
+
+#top-menu {
+    background-color: white;
+    margin-left: 73px;
+    padding-left: 30px;
+    width: 100vw;
+    position: fixed;  
+    height: 71px;
+    border-bottom: solid 1px lightgray;
+    z-index: 10;
+}
+
+#left-menu {    
+    background-color: rgb(41,43,55);    
+    margin: 0;
+    margin-top: 69px;
+    padding: 0;
+    width: 73px;    
+    height: 100vh;
+    clear: left;
+    position:fixed;        
+    display:block;
+    text-align:center;
+    z-index: 10;
+}
+
+#logo-up {
+    background: url("../../../images/templates/up/logo_up.png") no-repeat;
+    margin: 0;
+    padding: 0;
+    width: 73px;    
+    height: 71px;
+    position: fixed;
+}
+
+#content {
+    float: left;   
+    margin: 0;
+    padding-top: 10px;
+    padding-left: 25px;            
+    clear: left;
+    margin-left: 73px;
+    margin-top: 71px;      
+    width: 90%;
+    z-index: -10;
+}
+
+html {
+    height: 100%;
+}
+
+body {    
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(236,236,236);
+}
+
+.left-menu-icon {
+    font-size: 2em;
+    color: white;
+    clear: left;    
+    margin-top: 25px;
+    border: none;
+    text-decoration: none;
+}
+
+.left-menu-icon:hover {
+    color: rgb(246,146,51);    
+    border: none;
+    text-decoration: none;
+}
+
+@media screen and(max-width: 400px){
+    .content {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .body {
+        height: 60%;
+    }
+}  

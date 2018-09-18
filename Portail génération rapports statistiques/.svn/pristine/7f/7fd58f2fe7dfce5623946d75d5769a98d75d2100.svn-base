@@ -1,0 +1,229 @@
+function js_dialogue_supprimer(libelleDialogue, urlActionSiOui = '#') {
+
+    $("#popupconfirmation").text(libelleDialogue);
+    // cette ligne est très importante pour empêcher les liens ou les boutons de rediriger
+    // vers une autre page avant que l'usager ait cliqué dans le popup
+    event.preventDefault();
+    // retrouve l'attribut href du lien sur lequel on a cliqué    
+    // on définit les boutons ici plutôt que plus haut puisqu'on a besoin de connaître l'URL de la page, qui n'était pas encore disponible sur le document.ready.
+    $("#popupconfirmation").dialog({
+        buttons: [
+            {
+                text: "Oui",
+                click: function () {
+                    window.location.href = urlActionSiOui;
+                }
+            },
+            {
+                text: "Non",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
+        ]
+    });
+}
+
+/* Affiche une boite de dialogue de confirmation d'abonnement */
+function js_dialogue_confirmer(libelleDialogue, id, value) {
+
+    $("#popupconfirmation").text(libelleDialogue);
+    $("#popupconfirmation").dialog({
+        width: 385,
+        buttons: [
+            {
+                text: "Annuler",
+                click: function () {
+                    mettreToggleSurOff($("#" + id).bootstrapToggle('off'));
+                    $(this).dialog("close");
+                }
+            },
+            {
+                text: "Confirmer l'abonnement au rapport",
+                click: function (event) {
+                    event.preventDefault();
+
+                    var url = 'abonnement_controller/insererAbonnementRapport';
+                    var donnees = 'id_apobi_rapport=' + id + '&ra_tarif=' + value;
+                    var posting = $.post(url, donnees);
+                    posting.done(function (data) {
+                        var content = $(data).find("#content");
+                        $("#msg").empty().append(content);
+                        console.log('done');
+                    });
+                    posting.fail(function (data) {
+                        var content = $(data).find("#content");
+                        $("#msg").empty().append(content);
+                        console.log('fail');
+                        mettreToggleSurOff($("#" + id).bootstrapToggle('off'));
+                    });
+                    posting.always(function (data) {
+                        var content = $(data).find("#content");
+                        $("#msg").empty().append(content);
+                        console.log('always');
+                    });
+                    $(this).dialog("close");
+                }
+            }
+
+        ]
+    });
+}
+
+function js_dialogue_desabonnement() {
+
+    $("#popupdesabonnement").text(libelleDialogue);
+    $("#popupdesabonnement").dialog({
+        width: 385,
+        buttons: [
+            {
+                text: "Annuler",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            },
+            {
+                text: "Confirmer le désabonnement au rapport",
+                click: function (event) {
+                    event.preventDefault();
+                    var url = 'apobi_client_abonnement_model/insererDateDesabonnement'
+                    var donnees = 'fk_rapport=' + $rapport - > id_apobi_rapport;
+                    var posting = $.post(url, donnees);
+                    posting.done(function (data) {
+                        var content = $(data).find("#content");
+                        $("#msg").empty().append(content);
+                        console.log('done');
+                    });
+                    posting.fail(function (data) {
+                        var content = $(data).find("#content");
+                        $("#msg").empty().append(content);
+                        console.log('fail');
+                        mettreToggleSurOff($("#" + id).bootstrapToggle('off'));
+                    });
+                    posting.always(function (data) {
+                        var content = $(data).find("#content");
+                        $("#msg").empty().append(content);
+                        console.log('always');
+                    });
+                    $(this).dialog("close");
+                    mettreToggleSurOff($("#" + id).bootstrapToggle('off'));
+                }
+            }
+
+        ]
+    });
+
+
+}
+
+/* Permet l'affichage dans un pop-up d'un formulaire de saisie de dates */
+function js_dialogue_modal_form() {
+
+    $(document).ready(function () {
+        $('#myForm').on('submit', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var anneeDebut = $('#anneeDebut').val();
+            var anneeFin = $('#anneeFin').val();
+            var fk_apobi_rapport = $('#fk_apobi_rapport').val();
+            if (anneeDebut === '' || anneeFin === '') {
+                alert('Les champs sont obligatoires');
+            } else {
+                $.ajax({
+                    url: $this.attr('action'),
+                    type: $this.attr('method'),
+                    data: $this.serialize(),
+                    success: function (html) {
+                        alert(html);
+                    }
+                });
+                js_loader;
+            }
+        });
+    });
+}
+
+/* Permet l'affichage de l'animation de chargement */
+function js_chargement_gif() {
+    $body = $("body");
+    $(document).on({
+        ajaxStart: function () {
+            $body.addClass("loading");
+        },
+        ajaxStop: function () {
+            $body.removeClass("loading");
+        }
+    });
+}
+
+function js_loader() {
+
+    var load_screen = document.getElementById("load_screen");
+    document.body.removeChild(load_screen);
+}
+
+/* Permet de mettre le Toggle sur OFF */
+function mettreToggleSurOff() {
+    $('#id').bootstrapToggle('off');
+}
+
+/* Permet de mettre le Toggle sur ON */
+function mettre_toggle_sur_on() {
+    $('#id').bootstrapToggle('on');
+}
+
+/* Affiche une boite de dialogue avec un bouton OK */
+function js_dialogue_OK(libelleDialogue) {
+
+    $("#popupOK").text(libelleDialogue);
+    event.preventDefault();
+    $("#popupOK").dialog({
+        buttons: [
+            {
+                text: "OK",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
+        ]
+    });
+    $("#boutonOK").click(function (event) {
+        event.preventDefault();
+        $("#popupOK").dialog("open");
+    });
+}
+
+function js_rechercher(value) {
+
+    $(document).ready(function () {
+
+        $("#rechercher").click(function () {
+
+            var donnees = 'fk_client=' + value;
+            $.post({
+                url: "apobi_client_controller/rechercherClientParNom",
+                data: donnees,
+                cache: false,
+                success: function (html) {
+                    $('#msg').html(html);
+                }
+            }
+            );
+        });
+    }
+    );
+}
+
+function js_spin_loader() {
+
+    $(document).ready(function () {
+
+        $("#inputrapport").click(function () {
+            var load_screen = document.getElementById("load_screen");
+            document.body.removeChild(load_screen);
+        });
+    });
+}
+/*window.addEventListener("load", function(){
+ 
+ });*/

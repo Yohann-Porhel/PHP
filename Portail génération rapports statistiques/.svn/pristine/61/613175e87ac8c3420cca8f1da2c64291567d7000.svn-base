@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * Description of admin_client_controller
+ *
+ * @author yohann.porhel
+ */
+class admin_client_controller extends MY_Controller_Administrateur {
+
+    public function index() {
+        $this->load->model('apobi_client_model');
+        $this->load->model('apobi_utilisateur_model');
+        $var['clients'] = $this->apobi_client_model->getAll();       
+        $this->layout->view('clients/liste_clients_view', $var);
+    }
+
+    /* Permet l'affichage du formulaire de création d'une commande de jetons */
+
+    public function afficheCommandeJetonsView() {
+
+        $this->load->model('apobi_client_model');
+        $var['clients'] = $this->apobi_client_model->getAll();
+        $this->layout->view('commande/commande_jetons_view', $var);
+    }
+
+    /* Permet d'insérer une ligne de commande de jeton dans la table apobi_client_jeton */
+
+    public function insererCommandeJetons() {
+
+        $donnees['fk_client'] = $this->input->post('id_apobi_client');
+        $donnees['fk_utilisateur_creation'] = $this->session->utilisateur_connecte_id;
+        $donnees['cj_date_creation'] = date("Y-m-d");
+        $donnees['cj_date_debut_validite'] = $this->input->post('cj_date_debut_validite');
+        $donnees['cj_commentaire'] = $this->input->post('cj_commentaire');
+        $donnees['cj_quantite'] = $this->input->post('cj_quantite');
+
+        $this->load->model('apobi_client_jeton_model');
+        if (!$this->apobi_client_jeton_model->commit($donnees)) {
+            myform_set_flashdata_warning('Impossible de créer la commande');
+            redirect('admin/commande');
+            return false;
+        }
+        myform_set_flashdata_info('La commande est enregistrée');
+        redirect('admin/commande');
+    }
+
+}

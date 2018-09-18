@@ -1,0 +1,24 @@
+<?php
+
+/* ----------------------------------------------------------------- */
+/*                 Liste des utilisateurs                            */
+/* ----------------------------------------------------------------- */
+
+/* Initialisation des noms de colonnes de la table */
+$columns[1] = 'Login';
+$columns[2] = 'Email';
+$columns[3] = 'Mot de passe';
+
+/* Création de l'entête de table */
+echo table_header($columns,"Liste des utilisateurs");
+
+foreach ($utilisateurs as $utilisateur) {
+
+    $line[1] = $utilisateur->ut_login;
+    $line[2] = $utilisateur->ut_email;
+    $line[3] = $utilisateur->ut_password;
+    echo table_line($line);
+    
+}
+
+?>

@@ -1,0 +1,25 @@
+<?php
+
+class apobi_rapport_invite_model extends MY_Model {
+
+    protected $id = 'id_apobi_rapport_invite';
+    protected $table = 'apobi_rapport_invite';
+
+    public function inserer_rapport_invite($fk_apobi_rapport, $fk_apobi_invite) {
+
+        $sql = 'INSERT INTO ' . $this->table . '(fk_apobi_rapport, fk_apobi_invite) VALUES (?,?)'
+                . ' RETURNING id_apobi_rapport_invite';
+        $p[0] = $fk_apobi_rapport;
+        $p[1] = $fk_apobi_invite;
+
+        $query = $this->db->query($sql, $p);
+
+        if ($query->num_rows() == 0) {
+            return false;
+        }
+        foreach ($query->result() as $row) {
+            return $row->id_apobi_rapport_invite;
+        }
+    }
+
+}
